@@ -1,0 +1,20 @@
+RFA.FIT — EDIÇÃO VISUAL COM PAGES CMS
+
+Esta versão foi preparada para editar a loja por formulários gráficos, sem editar products.js.
+
+O que você edita no painel:
+- Produtos: nome, cor, preço, tamanhos, descrição, fotos e visibilidade.
+- Página da loja: capa, textos da coleção, diferenciais, A Marca, atendimento, WhatsApp e fotos da capa.
+
+COMO ATIVAR
+1. Substitua os arquivos do seu repositório rfa-fit por estes arquivos e faça git add/commit/push.
+2. Acesse https://app.pagescms.org e entre com GitHub.
+3. Instale/autorize o GitHub App do Pages CMS para o repositório audilucio/rfa-fit.
+4. Abra o repositório rfa-fit e a branch main. O arquivo .pages.yml já está pronto.
+5. Use “Produtos” ou “Página da loja” no painel. Ao salvar, o Pages CMS grava no GitHub; a Vercel publica automaticamente.
+
+IMPORTANTE
+- O Pages CMS é um editor visual de campos/formulários, não um editor de arrastar-e-soltar a página inteira.
+- Para mudar o layout/estrutura visual do site, ainda é necessário alterar index.html/CSS.
+- Para trocar fotos, use o campo Fotos. Os arquivos são gravados em assets/produtos.
+- Grade atual: P=40, M=42, G=44, GG=46 (guia de referência exibido na loja).

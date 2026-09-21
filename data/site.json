@@ -1,0 +1,54 @@
+{
+  "whatsappNumber": "5573982484011",
+  "instagramUrl": "https://instagram.com/SEU_INSTAGRAM",
+  "hero": {
+    "eyebrow": "RFA.FIT · MODA PRAIA",
+    "title": "Moda praia que valoriza você.",
+    "text": "Peças para viver o verão com liberdade, conforto e personalidade. Escolha sua cor e encontre seu próximo biquíni.",
+    "button": "VER COLEÇÃO →",
+    "images": [
+      "/assets/produtos/perola-03.jpg",
+      "/assets/produtos/terra-05.jpg",
+      "/assets/produtos/verde-01.jpg"
+    ]
+  },
+  "collection": {
+    "eyebrow": "COLEÇÃO 2026/2027",
+    "title": "Escolha seu biquíni.",
+    "text": "Modelos cortininha de amarrar, em cores marcantes e com detalhes em pedraria."
+  },
+  "benefits": {
+    "eyebrow": "RFA.FIT",
+    "title": "Detalhes que fazem diferença.",
+    "items": [
+      {
+        "title": "MODELAGEM AJUSTÁVEL",
+        "text": "Amarrações que permitem adaptar a peça ao corpo."
+      },
+      {
+        "title": "DETALHES EM PEDRARIA",
+        "text": "Acabamentos que dão personalidade aos modelos."
+      },
+      {
+        "title": "MODA PRAIA",
+        "text": "Peças pensadas para praia, piscina e momentos de lazer."
+      },
+      {
+        "title": "PRODUÇÃO RFA.FIT",
+        "text": "Uma proposta de moda praia com identidade própria."
+      }
+    ]
+  },
+  "about": {
+    "eyebrow": "A MARCA",
+    "title": "Mais que moda praia, uma forma de se sentir bem.",
+    "text1": "A RFA.FIT nasceu para valorizar diferentes histórias, estilos e formas de viver o verão. Nossos modelos unem a leveza das amarrações aos detalhes que tornam cada peça especial.",
+    "text2": "Escolha sua cor, seu tamanho e fale diretamente com a RFA.FIT para finalizar seu pedido.",
+    "image": "/assets/produtos/preto-01.jpg"
+  },
+  "contact": {
+    "eyebrow": "ATENDIMENTO",
+    "title": "Seu próximo biquíni está a uma mensagem.",
+    "text": "Escolha a peça, selecione seu tamanho e envie o pedido pelo WhatsApp. O atendimento confirma disponibilidade e orienta os próximos passos."
+  }
+}

@@ -101,6 +101,9 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
 .size-grid{display:flex;gap:8px;margin:9px 0 20px}
 .size{width:48px;height:42px;border:1px solid var(--line);background:#fff;border-radius:10px}
 .size.active{background:var(--ink);color:white;border-color:var(--ink)}
+.size-guide-btn{border:0;background:transparent;padding:0;margin:-8px 0 18px;color:var(--brown);font-weight:700;text-decoration:underline;cursor:pointer}
+.size-guide{display:none;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:-8px 0 20px;background:#fff}
+.size-guide.open{display:block}.size-guide table{width:100%;border-collapse:collapse;text-align:center}.size-guide th,.size-guide td{padding:10px;border-bottom:1px solid var(--line)}.size-guide tr:last-child td{border-bottom:0}.size-guide-note{padding:10px 12px;font-size:12px;color:var(--muted);background:var(--cream);line-height:1.45}
 .qty{display:flex;align-items:center;border:1px solid var(--line);background:#fff;border-radius:12px;width:max-content;overflow:hidden;margin-bottom:18px}
 .qty button{border:0;background:white;width:40px;height:42px;font-size:18px}
 .qty span{width:38px;text-align:center}
@@ -165,18 +168,18 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
   <div class="hero-media"><img id="heroImage" src="" alt="RFA.FIT Moda Praia"></div>
   <div class="hero-dots" id="heroDots"></div>
   <div class="container hero-copy">
-    <div class="eyebrow">RFA.FIT · MODA PRAIA</div>
-    <h1>Moda praia que valoriza você.</h1>
-    <p>Peças para viver o verão com liberdade, conforto e personalidade. Escolha sua cor e encontre seu próximo biquíni.</p>
-    <a class="btn light" href="#colecao">VER COLEÇÃO →</a>
+    <div class="eyebrow" id="heroEyebrow">RFA.FIT · MODA PRAIA</div>
+    <h1 id="heroTitle">Moda praia que valoriza você.</h1>
+    <p id="heroText">Peças para viver o verão com liberdade, conforto e personalidade. Escolha sua cor e encontre seu próximo biquíni.</p>
+    <a class="btn light" href="#colecao" id="heroButton">VER COLEÇÃO →</a>
   </div>
 </section>
 
 <section id="colecao">
   <div class="container">
     <div class="section-head">
-      <div><div class="eyebrow">COLEÇÃO 2026/2027</div><h2>Escolha seu biquíni.</h2></div>
-      <p>Modelos cortininha de amarrar, em cores marcantes e com detalhes em pedraria.</p>
+      <div><div class="eyebrow" id="collectionEyebrow">COLEÇÃO 2026/2027</div><h2 id="collectionTitle">Escolha seu biquíni.</h2></div>
+      <p id="collectionText">Modelos cortininha de amarrar, em cores marcantes e com detalhes em pedraria.</p>
     </div>
     <div class="grid" id="productGrid"></div>
   </div>
@@ -185,24 +188,19 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
 <section class="benefits" id="beneficios">
   <div class="container">
     <div class="section-head">
-      <div><div class="eyebrow">RFA.FIT</div><h2>Detalhes que fazem diferença.</h2></div>
+      <div><div class="eyebrow" id="benefitsEyebrow">RFA.FIT</div><h2 id="benefitsTitle">Detalhes que fazem diferença.</h2></div>
     </div>
-    <div class="benefit-grid">
-      <div class="benefit"><strong>MODELAGEM AJUSTÁVEL</strong><span>Amarrações que permitem adaptar a peça ao corpo.</span></div>
-      <div class="benefit"><strong>DETALHES EM PEDRARIA</strong><span>Acabamentos que dão personalidade aos modelos.</span></div>
-      <div class="benefit"><strong>MODA PRAIA</strong><span>Peças pensadas para praia, piscina e momentos de lazer.</span></div>
-      <div class="benefit"><strong>PRODUÇÃO RFA.FIT</strong><span>Uma proposta de moda praia com identidade própria.</span></div>
-    </div>
+    <div class="benefit-grid" id="benefitGrid"></div>
   </div>
 </section>
 
 <section id="marca">
   <div class="container about">
     <div class="about-copy">
-      <div class="eyebrow">A MARCA</div>
-      <h2>Mais que moda praia, uma forma de se sentir bem.</h2>
-      <p>A RFA.FIT nasceu para valorizar diferentes histórias, estilos e formas de viver o verão. Nossos modelos unem a leveza das amarrações aos detalhes que tornam cada peça especial.</p>
-      <p>Escolha sua cor, seu tamanho e fale diretamente com a RFA.FIT para finalizar seu pedido.</p>
+      <div class="eyebrow" id="aboutEyebrow">A MARCA</div>
+      <h2 id="aboutTitle">Mais que moda praia, uma forma de se sentir bem.</h2>
+      <p id="aboutText1">A RFA.FIT nasceu para valorizar diferentes histórias, estilos e formas de viver o verão. Nossos modelos unem a leveza das amarrações aos detalhes que tornam cada peça especial.</p>
+      <p id="aboutText2">Escolha sua cor, seu tamanho e fale diretamente com a RFA.FIT para finalizar seu pedido.</p>
       <a class="btn" href="#colecao">CONHECER A COLEÇÃO</a>
     </div>
     <div class="about-image"><img src="" id="aboutImage" alt="RFA.FIT Moda Praia"></div>
@@ -212,11 +210,11 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
 <section class="contact" id="contato">
   <div class="container contact-box">
     <div>
-      <div class="eyebrow">ATENDIMENTO</div>
-      <h2>Seu próximo biquíni está a uma mensagem.</h2>
-      <p>Escolha a peça, selecione seu tamanho e envie o pedido pelo WhatsApp. O atendimento confirma disponibilidade e orienta os próximos passos.</p>
+      <div class="eyebrow" id="contactEyebrow">ATENDIMENTO</div>
+      <h2 id="contactTitle">Seu próximo biquíni está a uma mensagem.</h2>
+      <p id="contactText">Escolha a peça, selecione seu tamanho e envie o pedido pelo WhatsApp. O atendimento confirma disponibilidade e orienta os próximos passos.</p>
     </div>
-    <div><a id="contactWhats" class="btn light" href="#" target="_blank" rel="noopener">FALAR NO WHATSAPP →</a><div class="notice">Substitua o número do WhatsApp no bloco de configuração do código.</div></div>
+    <div><a id="contactWhats" class="btn light" href="#" target="_blank" rel="noopener">FALAR NO WHATSAPP →</a><div class="notice">Atendimento direto pelo WhatsApp.</div></div>
   </div>
 </section>
 </main>
@@ -244,6 +242,13 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
         <p id="modalDescription"></p>
         <strong>TAMANHO</strong>
         <div class="size-grid" id="sizeGrid"></div>
+        <button class="size-guide-btn" type="button" onclick="toggleSizeGuide()">Ver tabela de tamanhos</button>
+        <div class="size-guide" id="sizeGuide">
+          <table aria-label="Tabela de tamanhos RFA.FIT"><thead><tr><th>Tamanho</th><th>Manequim</th></tr></thead><tbody>
+            <tr><td>P</td><td>40</td></tr><tr><td>M</td><td>42</td></tr><tr><td>G</td><td>44</td></tr><tr><td>GG</td><td>46</td></tr>
+          </tbody></table>
+          <div class="size-guide-note">Guia de referência da RFA.FIT. A modelagem pode apresentar pequenas variações conforme a peça. Em caso de dúvida, fale conosco pelo WhatsApp.</div>
+        </div>
         <div class="qty"><button onclick="changeQty(-1)">−</button><span id="qty">1</span><button onclick="changeQty(1)">+</button></div>
         <button class="btn" style="width:100%" onclick="addToCart()">ADICIONAR À SACOLA</button>
         <button class="btn whats" style="width:100%;margin-top:10px" onclick="buyNow()">COMPRAR PELO WHATSAPP</button>
@@ -266,18 +271,12 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
 </div>
 
 <script src="config.js"></script>
-<script src="products.js"></script>
-<script>
-const savedConfig = JSON.parse(localStorage.getItem("rfaFitConfig") || "null");
-const savedProducts = JSON.parse(localStorage.getItem("rfaFitProducts") || "null");
-const STORE_CONFIG = savedConfig ? {...RFA_CONFIG, ...savedConfig} : RFA_CONFIG;
-const PRODUCTS = Array.isArray(savedProducts) && savedProducts.length ? savedProducts : RFA_PRODUCTS;
 
-const HEROES = [
-  PRODUCTS[0].images[2],
-  PRODUCTS[1].images[4] || PRODUCTS[1].images[0],
-  PRODUCTS[2].images[0]
-];
+<script>
+let STORE_CONFIG = {...RFA_CONFIG};
+let PRODUCTS = [];
+let SITE = null;
+let HEROES = [];
 
 let currentProduct = null;
 let currentImage = 0;
@@ -320,7 +319,8 @@ function renderProducts(){
 function openProduct(id){
   currentProduct = PRODUCTS.find(p=>p.id===id);
   if(!currentProduct)return;
-  currentImage=0; currentQty=1; selectedSize="M";
+  currentImage=0; currentQty=1; selectedSize=(currentProduct.sizes||["P","M","G","GG"])[0];
+  document.getElementById("sizeGuide").classList.remove("open");
   document.getElementById("modalName").textContent=currentProduct.name;
   document.getElementById("modalColor").textContent=currentProduct.color;
   document.getElementById("modalPrice").textContent=money(currentProduct.price);
@@ -333,9 +333,12 @@ function openProduct(id){
 function closeProduct(){document.getElementById("productModal").classList.remove("open");document.body.style.overflow=""}
 function backdropClose(e){if(e.target.id==="productModal")closeProduct()}
 function renderSizes(){
-  document.getElementById("sizeGrid").innerHTML=["P","M","G","GG"].map(s=>`<button class="size ${s===selectedSize?"active":""}" onclick="selectSize('${s}')">${s}</button>`).join("");
+  const sizes=currentProduct?.sizes || ["P","M","G","GG"];
+  if(!sizes.includes(selectedSize)) selectedSize=sizes[0];
+  document.getElementById("sizeGrid").innerHTML=sizes.map(s=>`<button class="size ${s===selectedSize?"active":""}" onclick="selectSize('${s}')">${s}</button>`).join("");
 }
 function selectSize(s){selectedSize=s;renderSizes()}
+function toggleSizeGuide(){document.getElementById("sizeGuide").classList.toggle("open")}
 function renderGallery(){
   document.getElementById("modalImage").src=currentProduct.images[currentImage];
   document.getElementById("modalImage").alt=currentProduct.name;
@@ -406,11 +409,37 @@ function setupHero(){
   }
   render();
 }
-function boot(){
-  if(PRODUCTS.length) document.getElementById("aboutImage").src=PRODUCTS[Math.min(3,PRODUCTS.length-1)].images[0]||"";
-  document.getElementById("year").textContent=new Date().getFullYear();
-  renderProducts();renderCart();setWhatsLinks();setupHero();
-  setInterval(()=>{heroIndex=(heroIndex+1)%HEROES.length;setupHero()},6000);
+function applySiteContent(){
+  if(!SITE) return;
+  STORE_CONFIG.whatsappNumber = SITE.whatsappNumber || STORE_CONFIG.whatsappNumber;
+  STORE_CONFIG.instagramUrl = SITE.instagramUrl || STORE_CONFIG.instagramUrl;
+  const set=(id,val)=>{const el=document.getElementById(id); if(el && val!=null) el.textContent=val};
+  set("heroEyebrow",SITE.hero?.eyebrow); set("heroTitle",SITE.hero?.title); set("heroText",SITE.hero?.text); set("heroButton",SITE.hero?.button);
+  set("collectionEyebrow",SITE.collection?.eyebrow); set("collectionTitle",SITE.collection?.title); set("collectionText",SITE.collection?.text);
+  set("benefitsEyebrow",SITE.benefits?.eyebrow); set("benefitsTitle",SITE.benefits?.title);
+  set("aboutEyebrow",SITE.about?.eyebrow); set("aboutTitle",SITE.about?.title); set("aboutText1",SITE.about?.text1); set("aboutText2",SITE.about?.text2);
+  set("contactEyebrow",SITE.contact?.eyebrow); set("contactTitle",SITE.contact?.title); set("contactText",SITE.contact?.text);
+  const benefits=document.getElementById("benefitGrid");
+  if(benefits && Array.isArray(SITE.benefits?.items)) benefits.innerHTML=SITE.benefits.items.map(i=>`<div class="benefit"><strong>${i.title||""}</strong><span>${i.text||""}</span></div>`).join("");
+  if(SITE.about?.image) document.getElementById("aboutImage").src=SITE.about.image;
+}
+async function boot(){
+  try{
+    const [productsRes,siteRes]=await Promise.all([fetch("data/products.json",{cache:"no-store"}),fetch("data/site.json",{cache:"no-store"})]);
+    if(!productsRes.ok || !siteRes.ok) throw new Error("Não foi possível carregar os dados da loja.");
+    PRODUCTS=(await productsRes.json()).filter(p=>p.active!==false);
+    SITE=await siteRes.json();
+    HEROES=(SITE.hero?.images||[]).filter(Boolean);
+    if(!HEROES.length) HEROES=PRODUCTS.slice(0,3).map(p=>p.images?.[0]).filter(Boolean);
+    applySiteContent();
+    if(!document.getElementById("aboutImage").src && PRODUCTS.length) document.getElementById("aboutImage").src=PRODUCTS[Math.min(3,PRODUCTS.length-1)].images[0]||"";
+    document.getElementById("year").textContent=new Date().getFullYear();
+    renderProducts(); renderCart(); setWhatsLinks();
+    if(HEROES.length){ setupHero(); setInterval(()=>{heroIndex=(heroIndex+1)%HEROES.length;setupHero()},6000); }
+  }catch(err){
+    console.error(err);
+    document.getElementById("productGrid").innerHTML='<p style="grid-column:1/-1">Não foi possível carregar os produtos. Atualize a página.</p>';
+  }
 }
 boot();
 </script>

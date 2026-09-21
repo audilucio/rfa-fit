@@ -1,0 +1,32 @@
+RFA.FIT — COMO EDITAR A LOJA
+
+1. PREÇO, NOME, DESCRIÇÃO E TAMANHOS
+Abra products.js. Cada produto tem:
+- name: nome
+- color: cor
+- price: preço (ex.: 129.90)
+- sizes: tamanhos disponíveis (ex.: ["P", "M", "G"])
+- images: lista de fotos
+- description: descrição
+
+2. TROCAR/ACRESCENTAR FOTOS
+Copie a foto .jpg para assets/produtos/ e inclua o caminho no array images do produto.
+Ex.: "assets/produtos/novo-modelo-01.jpg"
+
+3. ACRESCENTAR NOVO MODELO
+No products.js, copie um bloco de produto inteiro, cole antes do último ] e altere id, name, color, price, sizes, images e description. O id deve ser único e sem espaços.
+
+4. GUIA DE TAMANHOS
+O site mostra:
+P = 40
+M = 42
+G = 44
+GG = 46
+A tabela é um guia de referência.
+
+5. PUBLICAR ALTERAÇÕES
+Na pasta do projeto:
+git add .
+git commit -m "Atualiza produtos RFA.FIT"
+git push
+A Vercel atualizará o site automaticamente.
