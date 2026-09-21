@@ -1,0 +1,89 @@
+media:
+  input: assets/produtos
+  output: /assets/produtos
+
+content:
+  - name: products
+    label: Produtos
+    type: file
+    path: data/products.json
+    format: json
+    fields:
+      - name: products
+        label: Produtos
+        type: object
+        list: true
+        fields:
+          - name: id
+            label: ID
+            type: string
+          - name: name
+            label: Nome do produto
+            type: string
+          - name: color
+            label: Cor
+            type: string
+          - name: price
+            label: Preço
+            type: number
+          - name: description
+            label: Descrição
+            type: text
+          - name: sizes
+            label: Tamanhos disponíveis
+            type: select
+            list: true
+            options:
+              values:
+                - P
+                - M
+                - G
+                - GG
+          - name: images
+            label: Fotos
+            type: image
+            list: true
+          - name: active
+            label: Produto ativo
+            type: boolean
+
+  - name: site
+    label: Página da Loja
+    type: file
+    path: data/site.json
+    format: json
+    fields:
+      - name: heroTitle
+        label: Título principal
+        type: string
+      - name: heroSubtitle
+        label: Subtítulo principal
+        type: string
+      - name: collectionTitle
+        label: Título da coleção
+        type: string
+      - name: collectionSubtitle
+        label: Texto da coleção
+        type: text
+      - name: aboutTitle
+        label: Título da seção A Marca
+        type: string
+      - name: aboutText
+        label: Texto sobre a marca
+        type: text
+      - name: contactTitle
+        label: Título do atendimento
+        type: string
+      - name: contactText
+        label: Texto do atendimento
+        type: text
+      - name: whatsappNumber
+        label: WhatsApp
+        type: string
+      - name: instagramUrl
+        label: Instagram
+        type: string
+      - name: heroImages
+        label: Fotos da capa
+        type: image
+        list: true
