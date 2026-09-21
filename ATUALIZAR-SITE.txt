@@ -1,0 +1,23 @@
+RFA.FIT — COMO EDITAR E PUBLICAR
+
+1. PRODUTOS
+Edite products.js para alterar nome, cor, preço, descrição e fotos.
+As fotos ficam em assets/produtos/.
+
+2. WHATSAPP / INSTAGRAM
+Edite config.js.
+O WhatsApp já está configurado como 5573982484011.
+
+3. TEXTOS E VISUAL DA PÁGINA
+Edite index.html.
+
+4. PUBLICAR ALTERAÇÕES
+Na pasta do projeto, execute:
+  git add .
+  git commit -m "Atualiza loja RFA.FIT"
+  git push
+
+A Vercel conectada ao GitHub fará o novo deploy automaticamente.
+
+CORREÇÃO DESTA VERSÃO
+Removida a chamada indevida a loadOnlineStore(), que interrompia o JavaScript e impedia o carregamento das fotos/produtos.

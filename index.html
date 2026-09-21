@@ -406,8 +406,7 @@ function setupHero(){
   }
   render();
 }
-async function boot(){
-  await loadOnlineStore();
+function boot(){
   if(PRODUCTS.length) document.getElementById("aboutImage").src=PRODUCTS[Math.min(3,PRODUCTS.length-1)].images[0]||"";
   document.getElementById("year").textContent=new Date().getFullYear();
   renderProducts();renderCart();setWhatsLinks();setupHero();
