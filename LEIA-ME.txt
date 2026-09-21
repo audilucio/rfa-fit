@@ -1,0 +1,35 @@
+RFA.FIT — LOJA ONLINE + PAINEL ADMINISTRATIVO
+
+O projeto agora suporta Supabase para:
+- login seguro do administrador;
+- banco de produtos;
+- alteração de nome, cor, preço, descrição e status;
+- upload de fotos para Storage;
+- configurações de WhatsApp e Instagram;
+- loja pública lendo os dados online.
+
+1) SUPABASE
+- Crie um projeto no Supabase.
+- Abra SQL Editor e execute o arquivo supabase.sql.
+- Em Authentication > Users, crie o usuário administrador com e-mail e senha.
+- Copie Project URL e anon public key.
+- Edite config.js:
+  supabaseUrl: "..."
+  supabaseAnonKey: "..."
+
+2) TESTE LOCAL
+- Abra index.html para ver a loja.
+- Abra admin/index.html para o painel.
+- O painel pede o e-mail do administrador e a senha.
+
+3) PUBLICAÇÃO
+A estrutura é estática e pode ser publicada na Vercel. Depois de publicar, o painel ficará em /admin/.
+
+4) SEGURANÇA
+Não coloque a service_role key do Supabase no navegador. Use somente a anon public key. As operações administrativas dependem da autenticação do Supabase e das políticas RLS do arquivo supabase.sql.
+
+WHATSAPP
+5573982484011
+
+INSTAGRAM
+Substitua SEU_INSTAGRAM em config.js ou pelo painel.
