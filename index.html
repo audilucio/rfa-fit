@@ -427,7 +427,7 @@ async function boot(){
   try{
     const [productsRes,siteRes]=await Promise.all([fetch("data/products.json",{cache:"no-store"}),fetch("data/site.json",{cache:"no-store"})]);
     if(!productsRes.ok || !siteRes.ok) throw new Error("Não foi possível carregar os dados da loja.");
-    PRODUCTS=(await productsRes.json()).filter(p=>p.active!==false);
+    const productsData=await productsRes.json(); PRODUCTS=(productsData.products||productsData).filter(p=>p.active!==false);
     SITE=await siteRes.json();
     HEROES=(SITE.hero?.images||[]).filter(Boolean);
     if(!HEROES.length) HEROES=PRODUCTS.slice(0,3).map(p=>p.images?.[0]).filter(Boolean);
