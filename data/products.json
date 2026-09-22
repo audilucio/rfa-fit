@@ -76,15 +76,19 @@
       "active": true
     },
     {
-      "id": "Pérola 1",
-      "name": "Biquíni  Pérola",
+      "id": "Lunar",
+      "name": "Biquíni Lunar",
       "color": "Pérola",
       "price": 199.9,
+      "description": "Modelo com top cortininha de amarrar e calcinha com acabamento delicado. Os detalhes em pedras e metais dourados dão um toque sofisticado e exclusivo à peça",
       "sizes": [
         "P",
         "M",
         "G",
         "GG"
+      ],
+      "images": [
+        "/assets/produtos/Biquíni cortininha de amarrar branco -1.png"
       ],
       "active": false
     }
