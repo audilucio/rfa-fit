@@ -127,14 +127,22 @@
       "active": true
     },
     {
+      "id": "Terra",
+      "name": "Biquíni Essenza Terra",
+      "color": "Terra",
       "price": 199.9,
+      "description": "Um modelo elegante que une a tonalidade terrosa ao brilho delicado do tecido. O top cortininha com amarração permite ajuste, enquanto a calcinha de laterais fixas mantém um visual limpo e moderno. A pedra central em tom âmbar, acompanhada dos detalhes dourados, dá personalidade e sofisticação à peça.",
       "sizes": [
         "P",
         "M",
         "G",
         "GG"
       ],
-      "active": false
+      "images": [
+        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_56_45.png",
+        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 07_09_06.png"
+      ],
+      "active": true
     }
   ]
 }
