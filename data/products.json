@@ -55,6 +55,9 @@
       "active": true
     },
     {
+      "active": false
+    },
+    {
       "id": "verde",
       "name": "Biquíni Cortininha Verde",
       "color": "Verde",
@@ -71,6 +74,17 @@
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 00_42_06.png"
       ],
       "active": true
+    },
+    {
+      "color": "Pérola",
+      "price": 199.9,
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "active": false
     }
   ]
 }
