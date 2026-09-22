@@ -91,6 +91,20 @@
       "active": false
     },
     {
+      "id": "Ônix",
+      "name": "Biquíni Ônix",
+      "color": "preto",
+      "price": 199.9,
+      "description": "Elegância em uma proposta marcante e atemporal. O Biquíni Ônix combina o clássico preto com um delicado detalhe central em pedra e acabamento dourado. O top cortininha possui amarração ajustável, enquanto a calcinha de laterais fixas traz um visual limpo e sofisticado.",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "images": [
+        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_01_28.png"
+      ],
       "active": false
     }
   ]
