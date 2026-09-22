@@ -107,6 +107,34 @@
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_13_04.png"
       ],
       "active": true
+    },
+    {
+      "id": "Essenza",
+      "name": "Biquíni Essenza",
+      "color": "Verde",
+      "price": 199.9,
+      "description": "Biquíni de modelagem elegante, com top cortininha de amarrar e calcinha de laterais fixas. O detalhe central em pedra com acabamento dourado traz personalidade e sofisticação à peça. Nesta versão em verde, a tonalidade intensa valoriza o brilho sutil do tecido e destaca o acabamento.",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "images": [
+        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_36_59.png",
+        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_45_00.png"
+      ],
+      "active": true
+    },
+    {
+      "price": 199.9,
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "active": false
     }
   ]
 }
