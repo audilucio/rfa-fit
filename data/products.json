@@ -180,11 +180,19 @@
       "active": true
     },
     {
-      "active": true
-    },
-    {
+      "id": "Verde",
+      "name": "Biquíni Essenza Verde",
+      "color": "Verde",
+      "price": 199.9,
+      "description": "O Essenza Verde combina um tom intenso e sofisticado com detalhes dourados. Possui top triangular com alças reguláveis e calcinha inteira, com argolas laterais douradas e fundo sem costura aparente. Uma cor marcante para destacar a peça sem perder a elegância.",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
       "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_39_26.png"
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_39_26-1.png"
       ],
       "active": true
     }
