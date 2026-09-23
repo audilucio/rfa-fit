@@ -143,6 +143,45 @@
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 07_09_06.png"
       ],
       "active": true
+    },
+    {
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "images": [
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_04_01.png"
+      ],
+      "active": false
+    },
+    {
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "images": [
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_04_07.png"
+      ],
+      "active": true
+    },
+    {
+      "images": [
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_13_23.png"
+      ],
+      "active": true
+    },
+    {
+      "active": true
+    },
+    {
+      "images": [
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_39_26.png"
+      ],
+      "active": true
     }
   ]
 }
