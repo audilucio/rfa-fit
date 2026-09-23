@@ -162,6 +162,11 @@
       "active": true
     },
     {
+      "id": "Essenza Terra",
+      "name": "Biquíni Essenza Terra",
+      "color": "Terra",
+      "price": 199.9,
+      "description": "O Essenza Terra aposta em uma tonalidade quente e elegante, combinada aos detalhes dourados. Top triangular com alças reguláveis e calcinha inteira com argolas laterais, além de fundo sem costura aparente, mantendo o acabamento clean da peça",
       "sizes": [
         "P",
         "M",
