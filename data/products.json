@@ -145,6 +145,11 @@
       "active": true
     },
     {
+      "id": "Essenza Preto",
+      "name": "Biquíni Essenza Preto",
+      "color": "Preto",
+      "price": 199.9,
+      "description": "Elegante e versátil, o Essenza Preto traz top triangular com alças reguláveis e detalhes dourados que valorizam o acabamento da peça. A calcinha possui laterais com argolas douradas e fundo sem costura aparente, deixando o visual mais limpo e sofisticado.",
       "sizes": [
         "P",
         "M",
@@ -154,7 +159,7 @@
       "images": [
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_04_01.png"
       ],
-      "active": false
+      "active": true
     },
     {
       "sizes": [
