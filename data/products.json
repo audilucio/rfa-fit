@@ -164,8 +164,8 @@
     },
     {
       "id": "Essenza Terra",
-      "name": "Biquíni Essenza Terra",
-      "color": "Terra",
+      "name": "Biquíni Essenza Terracota",
+      "color": "Terracota",
       "price": 199.9,
       "description": "O Essenza Terra aposta em uma tonalidade quente e elegante, combinada aos detalhes dourados. Top triangular com alças reguláveis e calcinha inteira com argolas laterais, além de fundo sem costura aparente, mantendo o acabamento clean da peça",
       "sizes": [
@@ -205,7 +205,7 @@
         "GG"
       ],
       "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_39_26-1.png",
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_39_26-3.png",
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_09_48-1.png"
       ],
       "active": true
