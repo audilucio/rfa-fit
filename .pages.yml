@@ -1,6 +1,6 @@
 media:
-  input: assets/produtos
-  output: /assets/produtos
+  input: assets
+  output: /assets
 
 content:
   - name: products
@@ -14,7 +14,6 @@ content:
         type: object
         list: true
         fields:
-
           - name: name
             label: Nome do biquíni
             type: string
@@ -24,7 +23,6 @@ content:
             label: Código do produto
             type: string
             required: true
-            description: "Use um nome curto e único, sem espaços. Exemplo: lunar, onix, perola."
 
           - name: active
             label: Mostrar produto na loja
@@ -49,11 +47,6 @@ content:
             label: Tamanhos disponíveis
             type: select
             list: true
-            default:
-              - P
-              - M
-              - G
-              - GG
             options:
               values:
                 - P
@@ -72,39 +65,6 @@ content:
     path: data/site.json
     format: json
     fields:
-
-      - name: heroTitle
-        label: Título principal
-        type: string
-
-      - name: heroSubtitle
-        label: Subtítulo principal
-        type: string
-
-      - name: collectionTitle
-        label: Título da coleção
-        type: string
-
-      - name: collectionSubtitle
-        label: Texto da coleção
-        type: text
-
-      - name: aboutTitle
-        label: Título da seção A Marca
-        type: string
-
-      - name: aboutText
-        label: Texto sobre a marca
-        type: text
-
-      - name: contactTitle
-        label: Título do atendimento
-        type: string
-
-      - name: contactText
-        label: Texto do atendimento
-        type: text
-
       - name: whatsappNumber
         label: WhatsApp
         type: string
@@ -113,7 +73,140 @@ content:
         label: Instagram
         type: string
 
-      - name: heroImages
-        label: Fotos da capa
-        type: image
-        list: true
+      - name: hero
+        label: 🏖️ Capa da Loja
+        type: object
+        fields:
+          - name: eyebrow
+            label: Texto superior
+            type: string
+          - name: title
+            label: Título
+            type: string
+          - name: text
+            label: Texto
+            type: text
+          - name: button
+            label: Texto do botão
+            type: string
+          - name: images
+            label: Imagens da capa
+            type: image
+            list: true
+
+      - name: collection
+        label: 🩱 Coleção
+        type: object
+        fields:
+          - name: eyebrow
+            label: Texto superior
+            type: string
+          - name: title
+            label: Título
+            type: string
+          - name: text
+            label: Descrição
+            type: text
+
+      - name: exclusive
+        label: ⭐ Modelos Exclusivos
+        type: object
+        fields:
+          - name: eyebrow
+            label: Texto superior
+            type: string
+
+          - name: title
+            label: Título
+            type: string
+
+          - name: text
+            label: Descrição da seção
+            type: text
+
+          - name: button
+            label: Texto do botão
+            type: string
+
+          - name: cover
+            label: Imagem principal dos exclusivos
+            type: image
+
+          - name: models
+            label: Modelos exclusivos
+            type: object
+            list: true
+            fields:
+              - name: name
+                label: Nome do modelo
+                type: string
+                required: true
+
+              - name: description
+                label: Descrição
+                type: text
+
+              - name: image
+                label: Imagem
+                type: image
+
+              - name: active
+                label: Mostrar no site
+                type: boolean
+                default: true
+
+      - name: benefits
+        label: ✨ Detalhes que fazem diferença
+        type: object
+        fields:
+          - name: eyebrow
+            label: Texto superior
+            type: string
+          - name: title
+            label: Título
+            type: string
+          - name: items
+            label: Itens
+            type: object
+            list: true
+            fields:
+              - name: title
+                label: Título
+                type: string
+              - name: text
+                label: Texto
+                type: text
+
+      - name: about
+        label: ❤️ A Marca
+        type: object
+        fields:
+          - name: eyebrow
+            label: Texto superior
+            type: string
+          - name: title
+            label: Título
+            type: string
+          - name: text1
+            label: Primeiro texto
+            type: text
+          - name: text2
+            label: Segundo texto
+            type: text
+          - name: image
+            label: Imagem
+            type: image
+
+      - name: contact
+        label: 💬 Atendimento
+        type: object
+        fields:
+          - name: eyebrow
+            label: Texto superior
+            type: string
+          - name: title
+            label: Título
+            type: string
+          - name: text
+            label: Texto
+            type: text
