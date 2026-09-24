@@ -239,7 +239,17 @@
       "active": true,
       "price": 199.9,
       "color": "Preto",
-      "description": " Um modelo elegante que combina o preto clássico com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto os detalhes decorativos criam um visual sofisticado e marcante."
+      "description": " Um modelo elegante que combina o preto clássico com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto os detalhes decorativos criam um visual sofisticado e marcante.",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "images": [
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_11_10-1.png",
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_22_56.png"
+      ]
     }
   ]
 }
