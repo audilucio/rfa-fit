@@ -1,468 +1,501 @@
-cd ~/RFA_FIT_LOJA_PROFISSIONAL || exit 1
-
-python3 <<'PY'
-from pathlib import Path
-import json
-import shutil
-import sys
-
-ROOT = Path(".")
-INDEX = ROOT / "index.html"
-SITE = ROOT / "data/site.json"
-PAGES = ROOT / ".pages.yml"
-
-# ============================================================
-# 1. BACKUP
-# ============================================================
-
-backup = ROOT / "backup-antes-exclusivos"
-backup.mkdir(exist_ok=True)
-
-shutil.copy2(INDEX, backup / "index.html.final-backup")
-shutil.copy2(SITE, backup / "site.json.final-backup")
-shutil.copy2(PAGES, backup / "pages.yml.final-backup")
-
-print("✓ Backup final criado")
-
-# ============================================================
-# 2. SITE.JSON
-# ============================================================
-
-with SITE.open("r", encoding="utf-8") as f:
-    site = json.load(f)
-
-site["exclusive"] = {
-    "eyebrow": "RFA.FIT · EDIÇÃO ESPECIAL",
-    "title": "Modelos Exclusivos",
-    "text": "Modelos especiais produzidos sob encomenda. Escolha seu modelo e fale conosco para consultar cores, tamanhos, prazo e disponibilidade.",
-    "button": "SOLICITAR PELO WHATSAPP",
-    "cover": "/assets/exclusivos/tendencias-2026-2027.png",
-    "models": [
-        {
-            "name": "Hot Pant Essenza",
-            "description": "Modelagem de cintura alta com proposta elegante e contemporânea.",
-            "image": "/assets/exclusivos/hot-pant-essenza.png",
-            "active": True
-        },
-        {
-            "name": "Asa-Delta Elevada",
-            "description": "Cintura alta com cava elevada e uma proposta moderna para a moda praia.",
-            "image": "/assets/exclusivos/asa-delta-elevada.png",
-            "active": True
-        },
-        {
-            "name": "Retrô 70",
-            "description": "Inspiração retrô com cintura alta e uma proposta clássica e elegante.",
-            "image": "/assets/exclusivos/retro-70.png",
-            "active": True
-        },
-        {
-            "name": "Hot Pant Minimal",
-            "description": "Linhas limpas e visual contemporâneo para uma proposta sofisticada e versátil.",
-            "image": "/assets/exclusivos/hot-pant-minimal.png",
-            "active": True
-        },
-        {
-            "name": "Hot Pant Joia",
-            "description": "Detalhes que acrescentam personalidade e sofisticação à modelagem de cintura alta.",
-            "image": "/assets/exclusivos/hot-pant-joia.png",
-            "active": True
-        },
-        {
-            "name": "Hot Pant Resort",
-            "description": "Modelagem de cintura alta com uma proposta elegante para praia, piscina e momentos de lazer.",
-            "image": "/assets/exclusivos/hot-pant-resort.png",
-            "active": True
-        }
-    ]
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="RFA.FIT — Moda Praia. Biquínis cortininha de amarrar.">
+<title>RFA.FIT — Moda Praia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#211a16;--muted:#74685f;--sand:#e8dccd;--cream:#f8f5ef;
+  --gold:#b88950;--brown:#6d442d;--white:#fff;--line:rgba(33,26,22,.12);
+  --shadow:0 20px 60px rgba(33,26,22,.14);--radius:24px
 }
-
-with SITE.open("w", encoding="utf-8") as f:
-    json.dump(site, f, ensure_ascii=False, indent=2)
-    f.write("\n")
-
-print("✓ site.json atualizado")
-
-# ============================================================
-# 3. INDEX.HTML
-# ============================================================
-
-html = INDEX.read_text(encoding="utf-8")
-
-# ---------- CSS ----------
-
-css_anchor = ".benefits{background:var(--sand)}"
-
-exclusive_css = r'''
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);background:var(--cream);font-family:"DM Sans",system-ui,sans-serif}
+button,a{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.container{width:min(1180px,calc(100% - 40px));margin:auto}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:500;margin:0;line-height:1.05}
+h2{font-size:clamp(34px,4vw,54px)}
+p{line-height:1.7}
+.btn{border:1px solid var(--ink);padding:14px 22px;border-radius:999px;background:var(--ink);color:white;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:.2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.light{background:white;color:var(--ink);border-color:white}
+.btn.ghost{background:transparent;color:var(--ink)}
+header{position:sticky;top:0;z-index:30;background:rgba(248,245,239,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-family:Fraunces,Georgia,serif;font-size:28px;letter-spacing:.03em}
+.logo small{display:block;font:600 8px "DM Sans";letter-spacing:.28em;text-align:center;margin-top:-2px}
+nav{display:flex;gap:24px;font-size:12px;letter-spacing:.12em;font-weight:700}
+nav a{opacity:.78}
+nav a:hover{opacity:1}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.icon-btn{border:1px solid var(--line);background:white;border-radius:50%;width:42px;height:42px;position:relative}
+.badge{position:absolute;right:-3px;top:-3px;background:var(--brown);color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:99px;display:grid;place-items:center}
+.mobile-menu{display:none}
+.hero{position:relative;min-height:680px;display:grid;align-items:end;overflow:hidden}
+.hero-media{position:absolute;inset:0;background:#ddd}
+.hero-media img{width:100%;height:100%;object-fit:cover}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,10,7,.55),rgba(15,10,7,.08) 60%,rgba(15,10,7,.18))}
+.hero-copy{position:relative;z-index:2;color:#fff;padding:90px 0 80px;max-width:590px}
+.hero-copy h1{font-size:clamp(54px,8vw,92px);margin:14px 0 18px}
+.hero-copy p{font-size:18px;max-width:500px;margin-bottom:28px}
+.hero-dots{position:absolute;z-index:3;right:30px;bottom:28px;display:flex;gap:7px}
+.hero-dots button{width:9px;height:9px;border-radius:50%;border:0;background:#fff;opacity:.5}
+.hero-dots button.active{opacity:1}
+section{padding:92px 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:38px}
+.section-head p{max-width:510px;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:white;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 35px rgba(33,26,22,.06);border:1px solid rgba(33,26,22,.05)}
+.card-media{aspect-ratio:4/5;overflow:hidden;background:#eee;position:relative}
+.card-media img{width:100%;height:100%;object-fit:cover;transition:.45s}
+.card:hover .card-media img{transform:scale(1.035)}
+.card-body{padding:18px}
+.card-title{font-size:18px;font-weight:600}
+.card-meta{font-size:13px;color:var(--muted);margin:5px 0 12px}
+.price{font-size:18px;font-weight:700}
+.card-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.small-btn{border:0;background:var(--ink);color:white;border-radius:999px;padding:10px 14px;font-size:12px;font-weight:700}
 .exclusive-section{background:#f1ebe2}
-.exclusive-cover{
-  background:white;
-  border-radius:28px;
-  overflow:hidden;
-  margin-bottom:32px;
-  box-shadow:0 10px 40px rgba(33,26,22,.08);
-  border:1px solid rgba(33,26,22,.06)
-}
-.exclusive-cover img{
-  width:100%;
-  height:auto;
-  display:block
-}
-.exclusive-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:24px
-}
-.exclusive-card{
-  background:white;
-  border-radius:24px;
-  overflow:hidden;
-  box-shadow:0 8px 35px rgba(33,26,22,.07);
-  border:1px solid rgba(33,26,22,.06)
-}
-.exclusive-card img{
-  width:100%;
-  height:auto;
-  display:block
-}
+.exclusive-cover{background:#fff;border-radius:28px;overflow:hidden;margin-bottom:32px;box-shadow:0 10px 40px rgba(33,26,22,.08);border:1px solid rgba(33,26,22,.06)}
+.exclusive-cover img{width:100%;height:auto;display:block}
+.exclusive-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.exclusive-card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 8px 35px rgba(33,26,22,.07);border:1px solid rgba(33,26,22,.06)}
+.exclusive-card img{width:100%;height:auto;display:block}
 .exclusive-body{padding:22px}
-.exclusive-tag{
-  display:inline-block;
-  font-size:10px;
-  letter-spacing:.16em;
-  font-weight:700;
-  color:var(--brown);
-  margin-bottom:8px
-}
+.exclusive-tag{display:inline-block;font-size:10px;letter-spacing:.16em;font-weight:700;color:var(--brown);margin-bottom:8px}
 .exclusive-body h3{font-size:27px;margin-bottom:9px}
-.exclusive-body p{
-  color:var(--muted);
-  font-size:14px;
-  margin:0 0 18px
+.exclusive-body p{color:var(--muted);font-size:14px;margin:0 0 18px}
+.exclusive-btn{width:100%;border:0;background:var(--ink);color:#fff;border-radius:999px;padding:13px 16px;font-weight:700;font-size:12px}
+.benefits{background:var(--sand)}
+.benefit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.benefit{padding:25px;background:rgba(255,255,255,.55);border-radius:18px}
+.benefit strong{display:block;margin-bottom:8px}
+.benefit span{font-size:14px;color:var(--muted);line-height:1.5}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.about-copy p{color:var(--muted)}
+.about-image{border-radius:30px;overflow:hidden;box-shadow:var(--shadow)}
+.about-image img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.contact{background:var(--ink);color:#fff}
+.contact-box{display:grid;grid-template-columns:1.3fr .7fr;gap:50px;align-items:center}
+.contact p{color:rgba(255,255,255,.72)}
+.contact .eyebrow{color:#d8ad77}
+footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.modal-backdrop{display:none;position:fixed;inset:0;background:rgba(20,15,12,.6);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--cream);width:min(1020px,100%);max-height:92vh;overflow:auto;border-radius:28px;box-shadow:0 30px 100px rgba(0,0,0,.3);position:relative}
+.close{position:absolute;right:18px;top:18px;z-index:5;border:0;background:rgba(255,255,255,.9);width:40px;height:40px;border-radius:50%;font-size:22px}
+.product-detail{display:grid;grid-template-columns:1.08fr .92fr}
+.gallery{padding:18px;background:#eee}
+.gallery-main{aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:#ddd;position:relative}
+.gallery-main img{width:100%;height:100%;object-fit:cover}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.9);z-index:2}
+.gallery-arrow.prev{left:12px}.gallery-arrow.next{right:12px}
+.thumbs{display:flex;gap:8px;overflow:auto;padding-top:10px}
+.thumb{width:68px;height:78px;border:2px solid transparent;border-radius:12px;overflow:hidden;padding:0;flex:0 0 auto}
+.thumb.active{border-color:var(--ink)}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.detail-copy{padding:55px 42px 42px}
+.detail-copy h2{font-size:42px;margin:10px 0}
+.detail-copy .detail-price{font-size:25px;font-weight:700;margin:18px 0}
+.swatches{display:flex;gap:8px;margin:20px 0}
+.swatch{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px}
+.size-grid{display:flex;gap:8px;margin:9px 0 20px}
+.size{width:48px;height:42px;border:1px solid var(--line);background:#fff;border-radius:10px}
+.size.active{background:var(--ink);color:white;border-color:var(--ink)}
+.size-guide-btn{border:0;background:transparent;padding:0;margin:-8px 0 18px;color:var(--brown);font-weight:700;text-decoration:underline;cursor:pointer}
+.size-guide{display:none;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:-8px 0 20px;background:#fff}
+.size-guide.open{display:block}.size-guide table{width:100%;border-collapse:collapse;text-align:center}.size-guide th,.size-guide td{padding:10px;border-bottom:1px solid var(--line)}.size-guide tr:last-child td{border-bottom:0}.size-guide-note{padding:10px 12px;font-size:12px;color:var(--muted);background:var(--cream);line-height:1.45}
+.qty{display:flex;align-items:center;border:1px solid var(--line);background:#fff;border-radius:12px;width:max-content;overflow:hidden;margin-bottom:18px}
+.qty button{border:0;background:white;width:40px;height:42px;font-size:18px}
+.qty span{width:38px;text-align:center}
+.whats{background:#1c8c4a;border-color:#1c8c4a}
+.cart-drawer{position:fixed;inset:0;z-index:90;pointer-events:none}
+.cart-drawer.open{pointer-events:auto}
+.cart-shade{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:.2s}
+.cart-drawer.open .cart-shade{opacity:1}
+.cart-panel{position:absolute;right:0;top:0;height:100%;width:min(440px,100%);background:var(--cream);transform:translateX(100%);transition:.25s;display:flex;flex-direction:column}
+.cart-drawer.open .cart-panel{transform:translateX(0)}
+.cart-head{padding:24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.cart-items{padding:18px;overflow:auto;flex:1}
+.cart-item{display:grid;grid-template-columns:74px 1fr auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.cart-item img{width:74px;height:90px;object-fit:cover;border-radius:12px}
+.cart-item h4{margin:3px 0 5px}
+.cart-item small{color:var(--muted)}
+.cart-remove{border:0;background:transparent;color:#a33}
+.cart-footer{padding:20px;border-top:1px solid var(--line)}
+.total{display:flex;justify-content:space-between;font-size:19px;font-weight:700;margin-bottom:15px}
+.floating-whats{position:fixed;right:20px;bottom:20px;z-index:50;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#1c8c4a;color:#fff;font-size:27px;box-shadow:0 12px 35px rgba(0,0,0,.2)}
+.notice{font-size:12px;color:var(--muted);margin-top:12px}
+@media(max-width:900px){
+  nav{display:none}.mobile-menu{display:block}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .benefit-grid{grid-template-columns:repeat(2,1fr)}
+  .exclusive-grid{grid-template-columns:1fr}
+  .about,.contact-box{grid-template-columns:1fr}
+  .hero{min-height:620px}
 }
-.exclusive-btn{
-  width:100%;
-  border:0;
-  background:var(--ink);
-  color:white;
-  border-radius:999px;
-  padding:13px 16px;
-  font-weight:700;
-  font-size:12px
+@media(max-width:640px){
+  .container{width:min(100% - 24px,1180px)}
+  .nav{height:66px}.logo{font-size:24px}
+  .hero{min-height:650px}.hero-copy{padding:70px 0 55px}
+  .hero-copy h1{font-size:55px}
+  section{padding:70px 0}
+  .section-head{display:block}.section-head p{margin-top:15px}
+  .grid{gap:12px}.card-body{padding:13px}.card-title{font-size:15px}.price{font-size:16px}
+  .small-btn{padding:9px 11px;font-size:11px}
+  .product-detail{grid-template-columns:1fr}.gallery{padding:10px}.detail-copy{padding:28px 22px 25px}.detail-copy h2{font-size:34px}
 }
-'''
+</style>
+</head>
+<body>
 
-if ".exclusive-section{" not in html:
-    if css_anchor not in html:
-        sys.exit("ERRO: ponto de CSS não encontrado.")
-    html = html.replace(
-        css_anchor,
-        exclusive_css + "\n" + css_anchor,
-        1
-    )
-
-# CSS responsivo
-mobile_anchor = "  .benefit-grid{grid-template-columns:repeat(2,1fr)}"
-
-if "  .exclusive-grid{grid-template-columns:1fr}" not in html:
-    if mobile_anchor not in html:
-        sys.exit("ERRO: media query não encontrada.")
-    html = html.replace(
-        mobile_anchor,
-        mobile_anchor + "\n  .exclusive-grid{grid-template-columns:1fr}",
-        1
-    )
-
-# ---------- LINK NO MENU ----------
-
-nav_anchor = '      <a href="#colecao">COLEÇÃO</a>'
-
-if 'href="#exclusivos"' not in html:
-    if nav_anchor not in html:
-        sys.exit("ERRO: menu da coleção não encontrado.")
-    html = html.replace(
-        nav_anchor,
-        nav_anchor + '\n      <a href="#exclusivos">EXCLUSIVOS</a>',
-        1
-    )
-
-# ---------- HTML DA SEÇÃO ----------
-
-section_anchor = '<section class="benefits" id="beneficios">'
-
-exclusive_section = r'''
-<section class="exclusive-section" id="exclusivos">
-  <div class="container">
-
-    <div class="section-head">
-      <div>
-        <div class="eyebrow" id="exclusiveEyebrow">RFA.FIT · EDIÇÃO ESPECIAL</div>
-        <h2 id="exclusiveTitle">Modelos Exclusivos</h2>
-      </div>
-
-      <p id="exclusiveText">
-        Modelos especiais produzidos sob encomenda.
-      </p>
+<header>
+  <div class="container nav">
+    <a href="#" class="logo">RFA.FIT<small>MODA PRAIA</small></a>
+    <nav>
+      <a href="#colecao">COLEÇÃO</a>
+      <a href="#exclusivos">EXCLUSIVOS</a>
+      <a href="#beneficios">DETALHES</a>
+      <a href="#marca">A MARCA</a>
+      <a href="#contato">CONTATO</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn mobile-menu" aria-label="Menu" onclick="document.querySelector('nav').classList.toggle('mobile-open')">☰</button>
+      <button class="icon-btn" aria-label="Sacola" onclick="openCart()">🛍<span class="badge" id="cartCount">0</span></button>
     </div>
+  </div>
+</header>
 
-    <div class="exclusive-cover" id="exclusiveCoverBox">
-      <img id="exclusiveCover" src="" alt="Modelos exclusivos RFA.FIT">
-    </div>
-
-    <div class="exclusive-grid" id="exclusiveGrid"></div>
-
+<main>
+<section class="hero">
+  <div class="hero-media"><img id="heroImage" src="" alt="RFA.FIT Moda Praia"></div>
+  <div class="hero-dots" id="heroDots"></div>
+  <div class="container hero-copy">
+    <div class="eyebrow" id="heroEyebrow">RFA.FIT · MODA PRAIA</div>
+    <h1 id="heroTitle">Moda praia que valoriza você.</h1>
+    <p id="heroText">Peças para viver o verão com liberdade, conforto e personalidade. Escolha sua cor e encontre seu próximo biquíni.</p>
+    <a class="btn light" href="#colecao" id="heroButton">VER COLEÇÃO →</a>
   </div>
 </section>
 
-'''
+<section id="colecao">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="eyebrow" id="collectionEyebrow">COLEÇÃO 2026/2027</div><h2 id="collectionTitle">Escolha seu biquíni.</h2></div>
+      <p id="collectionText">Modelos cortininha de amarrar, em cores marcantes e com detalhes em pedraria.</p>
+    </div>
+    <div class="grid" id="productGrid"></div>
+  </div>
+</section>
 
-if 'id="exclusivos"' not in html:
-    if section_anchor not in html:
-        sys.exit("ERRO: seção de benefícios não encontrada.")
-    html = html.replace(
-        section_anchor,
-        exclusive_section + section_anchor,
-        1
-    )
+<section class="exclusive-section" id="exclusivos">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="eyebrow" id="exclusiveEyebrow">RFA.FIT · EDIÇÃO ESPECIAL</div><h2 id="exclusiveTitle">Modelos Exclusivos</h2></div>
+      <p id="exclusiveText">Modelos especiais produzidos sob encomenda.</p>
+    </div>
+    <div class="exclusive-cover" id="exclusiveCoverBox"><img id="exclusiveCover" src="" alt="Modelos exclusivos RFA.FIT"></div>
+    <div class="exclusive-grid" id="exclusiveGrid"></div>
+  </div>
+</section>
 
-# ---------- JAVASCRIPT ----------
+<section class="benefits" id="beneficios">
+  <div class="container">
+    <div class="section-head">
+      <div><div class="eyebrow" id="benefitsEyebrow">RFA.FIT</div><h2 id="benefitsTitle">Detalhes que fazem diferença.</h2></div>
+    </div>
+    <div class="benefit-grid" id="benefitGrid"></div>
+  </div>
+</section>
 
-js_anchor = "function openProduct(id){"
+<section id="marca">
+  <div class="container about">
+    <div class="about-copy">
+      <div class="eyebrow" id="aboutEyebrow">A MARCA</div>
+      <h2 id="aboutTitle">Mais que moda praia, uma forma de se sentir bem.</h2>
+      <p id="aboutText1">A RFA.FIT nasceu para valorizar diferentes histórias, estilos e formas de viver o verão. Nossos modelos unem a leveza das amarrações aos detalhes que tornam cada peça especial.</p>
+      <p id="aboutText2">Escolha sua cor, seu tamanho e fale diretamente com a RFA.FIT para finalizar seu pedido.</p>
+      <a class="btn" href="#colecao">CONHECER A COLEÇÃO</a>
+    </div>
+    <div class="about-image"><img src="" id="aboutImage" alt="RFA.FIT Moda Praia"></div>
+  </div>
+</section>
 
-exclusive_js = r'''
-function renderExclusive(){
-  const section = SITE?.exclusive;
-  const grid = document.getElementById("exclusiveGrid");
+<section class="contact" id="contato">
+  <div class="container contact-box">
+    <div>
+      <div class="eyebrow" id="contactEyebrow">ATENDIMENTO</div>
+      <h2 id="contactTitle">Seu próximo biquíni está a uma mensagem.</h2>
+      <p id="contactText">Escolha a peça, selecione seu tamanho e envie o pedido pelo WhatsApp. O atendimento confirma disponibilidade e orienta os próximos passos.</p>
+    </div>
+    <div><a id="contactWhats" class="btn light" href="#" target="_blank" rel="noopener">FALAR NO WHATSAPP →</a><div class="notice">Atendimento direto pelo WhatsApp.</div></div>
+  </div>
+</section>
+</main>
 
-  if(!section || !grid) return;
+<footer><div class="container">© <span id="year"></span> RFA.FIT · MODA PRAIA</div></footer>
 
-  const models = (section.models || []).filter(m => m.active !== false);
+<a id="floatingWhats" class="floating-whats" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">◉</a>
 
-  grid.innerHTML = models.map((m,index) => `
-    <article class="exclusive-card">
-      ${m.image ? `<img src="${m.image}" alt="${m.name}" loading="lazy">` : ""}
-      <div class="exclusive-body">
-        <span class="exclusive-tag">MODELO EXCLUSIVO · SOB ENCOMENDA</span>
-        <h3>${m.name || ""}</h3>
-        <p>${m.description || ""}</p>
-        <button class="exclusive-btn" onclick="orderExclusive(${index})">
-          ${section.button || "SOLICITAR PELO WHATSAPP"}
-        </button>
+<div class="modal-backdrop" id="productModal" onclick="backdropClose(event)">
+  <div class="modal">
+    <button class="close" onclick="closeProduct()">×</button>
+    <div class="product-detail">
+      <div class="gallery">
+        <div class="gallery-main">
+          <button class="gallery-arrow prev" onclick="changeImage(-1)">‹</button>
+          <img id="modalImage" src="" alt="">
+          <button class="gallery-arrow next" onclick="changeImage(1)">›</button>
+        </div>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+      <div class="detail-copy">
+        <div class="eyebrow" id="modalColor"></div>
+        <h2 id="modalName"></h2>
+        <div class="detail-price" id="modalPrice"></div>
+        <p id="modalDescription"></p>
+        <strong>TAMANHO</strong>
+        <div class="size-grid" id="sizeGrid"></div>
+        <button class="size-guide-btn" type="button" onclick="toggleSizeGuide()">Ver tabela de tamanhos</button>
+        <div class="size-guide" id="sizeGuide">
+          <table aria-label="Tabela de tamanhos RFA.FIT"><thead><tr><th>Tamanho</th><th>Manequim</th></tr></thead><tbody>
+            <tr><td>P</td><td>40</td></tr><tr><td>M</td><td>42</td></tr><tr><td>G</td><td>44</td></tr><tr><td>GG</td><td>46</td></tr>
+          </tbody></table>
+          <div class="size-guide-note">Guia de referência da RFA.FIT. A modelagem pode apresentar pequenas variações conforme a peça. Em caso de dúvida, fale conosco pelo WhatsApp.</div>
+        </div>
+        <div class="qty"><button onclick="changeQty(-1)">−</button><span id="qty">1</span><button onclick="changeQty(1)">+</button></div>
+        <button class="btn" style="width:100%" onclick="addToCart()">ADICIONAR À SACOLA</button>
+        <button class="btn whats" style="width:100%;margin-top:10px" onclick="buyNow()">COMPRAR PELO WHATSAPP</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-shade" onclick="closeCart()"></div>
+  <aside class="cart-panel">
+    <div class="cart-head"><strong>Sua sacola</strong><button class="icon-btn" onclick="closeCart()">×</button></div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="total"><span>Subtotal</span><span id="cartTotal">R$ 0,00</span></div>
+      <button class="btn whats" style="width:100%" onclick="checkoutWhatsApp()">FINALIZAR NO WHATSAPP</button>
+      <div class="notice">O pedido será enviado para confirmação de disponibilidade, tamanho e pagamento.</div>
+    </div>
+  </aside>
+</div>
+
+<script src="config.js"></script>
+
+<script>
+let STORE_CONFIG = {...RFA_CONFIG};
+let PRODUCTS = [];
+let SITE = null;
+let HEROES = [];
+
+let currentProduct = null;
+let currentImage = 0;
+let selectedSize = "M";
+let currentQty = 1;
+let cart = JSON.parse(localStorage.getItem("rfaFitCart") || "[]");
+let heroIndex = 0;
+
+function money(v){
+  return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+}
+
+function waLink(message=""){
+  const number = STORE_CONFIG.whatsappNumber.replace(/\D/g,"");
+  return number ? `https://wa.me/${number}?text=${encodeURIComponent(message)}` : "#";
+}
+
+function setWhatsLinks(){
+  const href = waLink("Olá! Vim pelo site da RFA.FIT e gostaria de conhecer a coleção.");
+  document.getElementById("contactWhats").href = href;
+  document.getElementById("floatingWhats").href = href;
+}
+
+function renderProducts(){
+  const grid = document.getElementById("productGrid");
+  grid.innerHTML = PRODUCTS.map(p => `
+    <article class="card">
+      <button style="border:0;background:none;padding:0;width:100%;text-align:left" onclick="openProduct('${p.id}')">
+        <div class="card-media"><img src="${p.images[0]}" alt="${p.name}" loading="lazy"></div>
+      </button>
+      <div class="card-body">
+        <div class="card-title">${p.name}</div>
+        <div class="card-meta">${p.color} · Cortininha de amarrar</div>
+        <div class="card-row"><span class="price">${money(p.price)}</span><button class="small-btn" onclick="openProduct('${p.id}')">VER PEÇA</button></div>
       </div>
     </article>
   `).join("");
+}
 
-  if(!models.length){
-    document.getElementById("exclusivos").style.display = "none";
-  }
+function renderExclusive(){
+  const section=SITE?.exclusive;
+  const grid=document.getElementById("exclusiveGrid");
+  if(!section || !grid) return;
+  const models=(section.models||[]).filter(m=>m.active!==false);
+  grid.innerHTML=models.map((m,index)=>`
+    <article class="exclusive-card">
+      ${m.image?`<img src="${m.image}" alt="${m.name||"Modelo exclusivo RFA.FIT"}" loading="lazy">`:""}
+      <div class="exclusive-body">
+        <span class="exclusive-tag">MODELO EXCLUSIVO · SOB ENCOMENDA</span>
+        <h3>${m.name||""}</h3>
+        <p>${m.description||""}</p>
+        <button class="exclusive-btn" onclick="orderExclusive(${index})">${section.button||"SOLICITAR PELO WHATSAPP"}</button>
+      </div>
+    </article>`).join("");
 }
 
 function orderExclusive(index){
-  const models = (SITE?.exclusive?.models || []).filter(m => m.active !== false);
-  const model = models[index];
-
-  if(!model) return;
-
-  const message =
-    `Olá! Vim pelo site da RFA.FIT e tenho interesse no modelo exclusivo ${model.name}. ` +
-    `Gostaria de informações para encomenda, cores, tamanhos, prazo e valor.`;
-
-  const href = waLink(message);
-
-  if(href === "#"){
-    alert("WhatsApp não configurado.");
-    return;
-  }
-
+  const models=(SITE?.exclusive?.models||[]).filter(m=>m.active!==false);
+  const model=models[index];
+  if(!model)return;
+  const href=waLink(`Olá! Vim pelo site da RFA.FIT e tenho interesse no modelo exclusivo ${model.name}. Gostaria de informações para encomenda, cores, tamanhos, prazo e valor.`);
+  if(href==="#"){alert("WhatsApp não configurado.");return}
   window.open(href,"_blank");
 }
 
-'''
-
-if "function renderExclusive()" not in html:
-    if js_anchor not in html:
-        sys.exit("ERRO: ponto JavaScript não encontrado.")
-    html = html.replace(
-        js_anchor,
-        exclusive_js + js_anchor,
-        1
-    )
-
-# ---------- CONTEÚDO DINÂMICO ----------
-
-apply_anchor = '  set("collectionEyebrow",SITE.collection?.eyebrow); set("collectionTitle",SITE.collection?.title); set("collectionText",SITE.collection?.text);'
-
-apply_exclusive = '''  set("exclusiveEyebrow",SITE.exclusive?.eyebrow);
-  set("exclusiveTitle",SITE.exclusive?.title);
-  set("exclusiveText",SITE.exclusive?.text);
-
+function openProduct(id){
+  currentProduct = PRODUCTS.find(p=>p.id===id);
+  if(!currentProduct)return;
+  currentImage=0; currentQty=1; selectedSize=(currentProduct.sizes||["P","M","G","GG"])[0];
+  document.getElementById("sizeGuide").classList.remove("open");
+  document.getElementById("modalName").textContent=currentProduct.name;
+  document.getElementById("modalColor").textContent=currentProduct.color;
+  document.getElementById("modalPrice").textContent=money(currentProduct.price);
+  document.getElementById("modalDescription").textContent=currentProduct.description;
+  document.getElementById("qty").textContent=currentQty;
+  renderSizes(); renderGallery();
+  document.getElementById("productModal").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+function closeProduct(){document.getElementById("productModal").classList.remove("open");document.body.style.overflow=""}
+function backdropClose(e){if(e.target.id==="productModal")closeProduct()}
+function renderSizes(){
+  const sizes=currentProduct?.sizes || ["P","M","G","GG"];
+  if(!sizes.includes(selectedSize)) selectedSize=sizes[0];
+  document.getElementById("sizeGrid").innerHTML=sizes.map(s=>`<button class="size ${s===selectedSize?"active":""}" onclick="selectSize('${s}')">${s}</button>`).join("");
+}
+function selectSize(s){selectedSize=s;renderSizes()}
+function toggleSizeGuide(){document.getElementById("sizeGuide").classList.toggle("open")}
+function renderGallery(){
+  document.getElementById("modalImage").src=currentProduct.images[currentImage];
+  document.getElementById("modalImage").alt=currentProduct.name;
+  document.getElementById("thumbs").innerHTML=currentProduct.images.map((src,i)=>`<button class="thumb ${i===currentImage?"active":""}" onclick="setImage(${i})"><img src="${src}" alt=""></button>`).join("");
+}
+function setImage(i){currentImage=i;renderGallery()}
+function changeImage(dir){
+  currentImage=(currentImage+dir+currentProduct.images.length)%currentProduct.images.length;
+  renderGallery();
+}
+function changeQty(delta){currentQty=Math.max(1,currentQty+delta);document.getElementById("qty").textContent=currentQty}
+function addToCart(){
+  const item={id:currentProduct.id,size:selectedSize,qty:currentQty};
+  const existing=cart.find(i=>i.id===item.id&&i.size===item.size);
+  if(existing)existing.qty+=item.qty; else cart.push(item);
+  saveCart(); closeProduct(); openCart();
+}
+function removeCart(index){cart.splice(index,1);saveCart()}
+function saveCart(){localStorage.setItem("rfaFitCart",JSON.stringify(cart));renderCart()}
+function renderCart(){
+  document.getElementById("cartCount").textContent=cart.reduce((a,i)=>a+i.qty,0);
+  const el=document.getElementById("cartItems");
+  if(!cart.length){el.innerHTML="<p style='color:var(--muted)'>Sua sacola está vazia.</p>";document.getElementById("cartTotal").textContent=money(0);return}
+  let total=0;
+  el.innerHTML=cart.map((item,index)=>{
+    const p=PRODUCTS.find(x=>x.id===item.id); if(!p)return "";
+    const subtotal=p.price*item.qty; total+=subtotal;
+    return `<div class="cart-item">
+      <img src="${p.images[0]}" alt="${p.name}">
+      <div><h4>${p.name}</h4><small>Tamanho ${item.size} · ${item.qty} un.</small><div style="margin-top:7px;font-weight:700">${money(subtotal)}</div></div>
+      <button class="cart-remove" onclick="removeCart(${index})">remover</button>
+    </div>`;
+  }).join("");
+  document.getElementById("cartTotal").textContent=money(total);
+}
+function openCart(){renderCart();document.getElementById("cartDrawer").classList.add("open");document.body.style.overflow="hidden"}
+function closeCart(){document.getElementById("cartDrawer").classList.remove("open");document.body.style.overflow=""}
+function buildOrderMessage(){
+  if(!cart.length)return "";
+  let lines=["Olá! Quero fazer este pedido pela RFA.FIT:",""];
+  let total=0;
+  cart.forEach(i=>{
+    const p=PRODUCTS.find(x=>x.id===i.id); if(!p)return;
+    total+=p.price*i.qty;
+    lines.push(`• ${p.name} — Tamanho ${i.size} — ${i.qty} un. — ${money(p.price*i.qty)}`);
+  });
+  lines.push("",`Subtotal: ${money(total)}`,"","Pode me confirmar disponibilidade e as formas de pagamento?");
+  return lines.join("\n");
+}
+function checkoutWhatsApp(){
+  if(!cart.length){alert("Sua sacola está vazia.");return}
+  const href=waLink(buildOrderMessage());
+  if(href==="#"){alert("Configure seu número de WhatsApp no código antes de finalizar.");return}
+  window.open(href,"_blank");
+}
+function buyNow(){
+  const temp=[{id:currentProduct.id,size:selectedSize,qty:currentQty}];
+  const old=cart; cart=temp; const href=waLink(buildOrderMessage()); cart=old;
+  if(href==="#"){alert("Configure seu número de WhatsApp no código antes de finalizar.");return}
+  window.open(href,"_blank");
+}
+function setupHero(){
+  const image=document.getElementById("heroImage");
+  const dots=document.getElementById("heroDots");
+  function render(){
+    image.src=HEROES[heroIndex];
+    dots.innerHTML=HEROES.map((_,i)=>`<button class="${i===heroIndex?"active":""}" onclick="heroIndex=${i};setupHero()"></button>`).join("");
+  }
+  render();
+}
+function applySiteContent(){
+  if(!SITE) return;
+  STORE_CONFIG.whatsappNumber = SITE.whatsappNumber || STORE_CONFIG.whatsappNumber;
+  STORE_CONFIG.instagramUrl = SITE.instagramUrl || STORE_CONFIG.instagramUrl;
+  const set=(id,val)=>{const el=document.getElementById(id); if(el && val!=null) el.textContent=val};
+  set("heroEyebrow",SITE.hero?.eyebrow); set("heroTitle",SITE.hero?.title); set("heroText",SITE.hero?.text); set("heroButton",SITE.hero?.button);
+  set("collectionEyebrow",SITE.collection?.eyebrow); set("collectionTitle",SITE.collection?.title); set("collectionText",SITE.collection?.text);
+  set("exclusiveEyebrow",SITE.exclusive?.eyebrow); set("exclusiveTitle",SITE.exclusive?.title); set("exclusiveText",SITE.exclusive?.text);
   const exclusiveCover=document.getElementById("exclusiveCover");
   const exclusiveCoverBox=document.getElementById("exclusiveCoverBox");
-
-  if(exclusiveCover && SITE.exclusive?.cover){
-    exclusiveCover.src=SITE.exclusive.cover;
-    exclusiveCoverBox.style.display="";
-  }else if(exclusiveCoverBox){
-    exclusiveCoverBox.style.display="none";
-  }'''
-
-if 'set("exclusiveEyebrow"' not in html:
-    if apply_anchor not in html:
-        sys.exit("ERRO: applySiteContent não encontrado.")
-    html = html.replace(
-        apply_anchor,
-        apply_anchor + "\n" + apply_exclusive,
-        1
-    )
-
-# ---------- BOOT ----------
-
-boot_anchor = "    renderProducts(); renderCart(); setWhatsLinks();"
-
-if "    renderExclusive();" not in html:
-    if boot_anchor not in html:
-        sys.exit("ERRO: boot não encontrado.")
-    html = html.replace(
-        boot_anchor,
-        "    renderProducts(); renderExclusive(); renderCart(); setWhatsLinks();",
-        1
-    )
-
-INDEX.write_text(html, encoding="utf-8")
-
-print("✓ index.html atualizado")
-
-# ============================================================
-# 4. PAGES CMS
-# ============================================================
-
-pages = PAGES.read_text(encoding="utf-8")
-
-# Acrescentamos os exclusivos dentro da configuração da página.
-# É feito antes do final do arquivo, preservando produtos existentes.
-
-exclusive_pages = r'''
-
-      - name: exclusive
-        label: Modelos exclusivos sob encomenda
-        type: object
-        fields:
-          - name: eyebrow
-            label: Chamada pequena
-            type: string
-          - name: title
-            label: Título
-            type: string
-          - name: text
-            label: Texto de apresentação
-            type: text
-          - name: button
-            label: Texto do botão
-            type: string
-          - name: cover
-            label: Imagem de abertura
-            type: image
-          - name: models
-            label: Modelos exclusivos
-            type: object
-            list: true
-            fields:
-              - name: name
-                label: Nome do modelo
-                type: string
-              - name: description
-                label: Descrição
-                type: text
-              - name: image
-                label: Imagem
-                type: image
-              - name: active
-                label: Mostrar no site
-                type: boolean
-'''
-
-# Só adiciona se ainda não existir.
-if "label: Modelos exclusivos sob encomenda" not in pages:
-    # A configuração atual do site termina com heroImages.
-    # Acrescentamos o novo objeto no mesmo nível de fields.
-    pages = pages.rstrip() + exclusive_pages + "\n"
-    PAGES.write_text(pages, encoding="utf-8")
-    print("✓ Pages CMS atualizado")
-else:
-    print("✓ Pages CMS já possuía configuração dos exclusivos")
-
-# ============================================================
-# 5. VALIDAÇÕES
-# ============================================================
-
-json.load(open(SITE, encoding="utf-8"))
-
-required_images = [
-    "assets/exclusivos/tendencias-2026-2027.png",
-    "assets/exclusivos/hot-pant-essenza.png",
-    "assets/exclusivos/asa-delta-elevada.png",
-    "assets/exclusivos/retro-70.png",
-    "assets/exclusivos/hot-pant-minimal.png",
-    "assets/exclusivos/hot-pant-joia.png",
-    "assets/exclusivos/hot-pant-resort.png",
-]
-
-missing = [p for p in required_images if not Path(p).exists()]
-
-if missing:
-    print("ERRO: imagens ausentes:")
-    for p in missing:
-        print(" -", p)
-    sys.exit(1)
-
-html_check = INDEX.read_text(encoding="utf-8")
-
-checks = [
-    'id="exclusivos"',
-    'id="exclusiveGrid"',
-    "function renderExclusive()",
-    "function orderExclusive(index)",
-    "renderExclusive();"
-]
-
-for check in checks:
-    if check not in html_check:
-        sys.exit("ERRO na validação: " + check)
-
-print("✓ JSON válido")
-print("✓ 7 imagens encontradas")
-print("✓ seção exclusiva encontrada")
-print("✓ WhatsApp dos exclusivos configurado")
-
-PY
-
-# ============================================================
-# 6. VALIDAR YAML
-# ============================================================
-
-python3 - <<'PY'
-try:
-    import yaml
-    yaml.safe_load(open(".pages.yml", encoding="utf-8"))
-    print("✓ YAML do Pages CMS válido")
-except ImportError:
-    print("⚠ PyYAML não instalado; validação YAML ignorada.")
-except Exception as e:
-    print("ERRO no .pages.yml:")
-    print(e)
-    raise SystemExit(1)
-PY
-
-# ============================================================
-# 7. MOSTRAR ALTERAÇÕES ANTES DE PUBLICAR
-# ============================================================
-
-echo
-echo "======================================"
-echo "ALTERAÇÕES PREPARADAS"
-echo "======================================"
-
-git status --short
-
-echo
-echo "Se você está vendo esta mensagem, o script terminou sem erro."
+  if(exclusiveCover && SITE.exclusive?.cover){exclusiveCover.src=SITE.exclusive.cover;exclusiveCoverBox.style.display=""}else if(exclusiveCoverBox){exclusiveCoverBox.style.display="none"}
+  set("benefitsEyebrow",SITE.benefits?.eyebrow); set("benefitsTitle",SITE.benefits?.title);
+  set("aboutEyebrow",SITE.about?.eyebrow); set("aboutTitle",SITE.about?.title); set("aboutText1",SITE.about?.text1); set("aboutText2",SITE.about?.text2);
+  set("contactEyebrow",SITE.contact?.eyebrow); set("contactTitle",SITE.contact?.title); set("contactText",SITE.contact?.text);
+  const benefits=document.getElementById("benefitGrid");
+  if(benefits && Array.isArray(SITE.benefits?.items)) benefits.innerHTML=SITE.benefits.items.map(i=>`<div class="benefit"><strong>${i.title||""}</strong><span>${i.text||""}</span></div>`).join("");
+  if(SITE.about?.image) document.getElementById("aboutImage").src=SITE.about.image;
+}
+async function boot(){
+  try{
+    const [productsRes,siteRes]=await Promise.all([fetch("data/products.json",{cache:"no-store"}),fetch("data/site.json",{cache:"no-store"})]);
+    if(!productsRes.ok || !siteRes.ok) throw new Error("Não foi possível carregar os dados da loja.");
+    const productsData=await productsRes.json(); PRODUCTS=(productsData.products||productsData).filter(p=>p.active!==false);
+    SITE=await siteRes.json();
+    HEROES=(SITE.hero?.images||[]).filter(Boolean);
+    if(!HEROES.length) HEROES=PRODUCTS.slice(0,3).map(p=>p.images?.[0]).filter(Boolean);
+    applySiteContent();
+    if(!document.getElementById("aboutImage").src && PRODUCTS.length) document.getElementById("aboutImage").src=PRODUCTS[Math.min(3,PRODUCTS.length-1)].images[0]||"";
+    document.getElementById("year").textContent=new Date().getFullYear();
+    renderProducts(); renderExclusive(); renderCart(); setWhatsLinks();
+    if(HEROES.length){ setupHero(); setInterval(()=>{heroIndex=(heroIndex+1)%HEROES.length;setupHero()},6000); }
+  }catch(err){
+    console.error(err);
+    document.getElementById("productGrid").innerHTML='<p style="grid-column:1/-1">Não foi possível carregar os produtos. Atualize a página.</p>';
+  }
+}
+boot();
+</script>
+</body>
+</html>
