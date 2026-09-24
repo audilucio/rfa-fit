@@ -215,6 +215,23 @@
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_39_26-3.png",
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_09_48-1.png"
       ]
+    },
+    {
+      "name": "Biquíni Esmeralda",
+      "id": "Esmeralda",
+      "active": true,
+      "price": 199.9,
+      "color": "Verde",
+      "description": "Um modelo marcante que combina o verde intenso com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto os detalhes decorativos trazem personalidade e sofisticação ao visual.\nDetalhes: top cortininha de amarrar • calcinha de amarrar nas laterais • pedras decorativas vermelhas • detalhes dourados • brilho sutil no tecido • produção RFA.FIT.",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "images": [
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_11_17.png"
+      ]
     }
   ]
 }
