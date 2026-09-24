@@ -35,6 +35,7 @@ content:
             label: Preço
             type: number
             required: true
+            default: 199.9
 
           - name: color
             label: Cor
@@ -48,6 +49,11 @@ content:
             label: Tamanhos disponíveis
             type: select
             list: true
+            default:
+              - P
+              - M
+              - G
+              - GG
             options:
               values:
                 - P
@@ -66,6 +72,7 @@ content:
     path: data/site.json
     format: json
     fields:
+
       - name: heroTitle
         label: Título principal
         type: string
