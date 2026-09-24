@@ -1,10 +1,11 @@
 {
   "products": [
     {
-      "id": "perola",
       "name": "Biquíni Cortininha Pérola",
-      "color": "Pérola",
+      "id": "perola",
+      "active": true,
       "price": 199.9,
+      "color": "Pérola",
       "description": "Delicado, ajustável e cheio de personalidade. O modelo cortininha traz amarrações que permitem ajustar a peça ao corpo, com detalhes em pedraria que valorizam o acabamento.",
       "sizes": [
         "P",
@@ -15,14 +16,14 @@
       "images": [
         "/assets/produtos/perola-03.jpg",
         "/assets/produtos/ChatGPT Image 21 de set. de 2026, 19_23_37-1.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "preto",
       "name": "Biquíni Cortininha Preto",
-      "color": "Preto",
+      "id": "preto",
+      "active": true,
       "price": 199.9,
+      "color": "Preto",
       "description": "Modelo cortininha ajustável, com acabamento elegante e proposta versátil para praia, piscina e momentos de lazer.",
       "sizes": [
         "P",
@@ -33,14 +34,14 @@
       "images": [
         "/assets/produtos/preto-02.jpg",
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 00_32_41.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "terra",
       "name": "Biquíni Cortininha Terracota",
-      "color": "Terracota",
+      "id": "terra",
+      "active": true,
       "price": 199.9,
+      "color": "Terracota",
       "description": "Modelo cortininha ajustável em tom terra, com visual sofisticado e acabamento pensado para valorizar a peça.",
       "sizes": [
         "P",
@@ -51,14 +52,14 @@
       "images": [
         "/assets/produtos/terra-01.jpg",
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 00_37_09.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "verde",
       "name": "Biquíni Cortininha Verde",
-      "color": "Verde",
+      "id": "verde",
+      "active": true,
       "price": 199.9,
+      "color": "Verde",
       "description": "Modelo cortininha ajustável em verde, com proposta elegante e confortável para compor produções de moda praia.",
       "sizes": [
         "P",
@@ -69,14 +70,14 @@
       "images": [
         "/assets/produtos/verde-01.jpg",
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 00_42_06.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "Lunar",
       "name": "Biquíni Lunar",
-      "color": "Pérola",
+      "id": "Lunar",
+      "active": true,
       "price": 199.9,
+      "color": "Pérola",
       "description": "Modelo com top cortininha de amarrar e calcinha com acabamento delicado. Os detalhes em pedras e metais dourados dão um toque sofisticado e exclusivo à peça",
       "sizes": [
         "P",
@@ -87,14 +88,14 @@
       "images": [
         "/assets/produtos/Biquíni branco -1.png",
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 05_50_53.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "Ônix",
       "name": "Biquíni Ônix",
-      "color": "preto",
+      "id": "Ônix",
+      "active": true,
       "price": 199.9,
+      "color": "preto",
       "description": "Elegância em uma proposta marcante e atemporal. O Biquíni Ônix combina o clássico preto com um delicado detalhe central em pedra e acabamento dourado. O top cortininha possui amarração ajustável, enquanto a calcinha de laterais fixas traz um visual limpo e sofisticado.",
       "sizes": [
         "P",
@@ -105,14 +106,14 @@
       "images": [
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_01_28.png",
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_13_04.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "Essenza",
       "name": "Biquíni Essenza",
-      "color": "Verde",
+      "id": "Essenza",
+      "active": true,
       "price": 199.9,
+      "color": "Verde",
       "description": "Biquíni de modelagem elegante, com top cortininha de amarrar e calcinha de laterais fixas. O detalhe central em pedra com acabamento dourado traz personalidade e sofisticação à peça. Nesta versão em verde, a tonalidade intensa valoriza o brilho sutil do tecido e destaca o acabamento.",
       "sizes": [
         "P",
@@ -123,14 +124,14 @@
       "images": [
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_36_59.png",
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_45_00.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "Terra",
       "name": "Biquíni Essenza Terracota",
-      "color": "Terracota",
+      "id": "Terra",
+      "active": true,
       "price": 199.9,
+      "color": "Terracota",
       "description": "Um modelo elegante que une a tonalidade terrosa ao brilho delicado do tecido. O top cortininha com amarração permite ajuste, enquanto a calcinha de laterais fixas mantém um visual limpo e moderno. A pedra central em tom âmbar, acompanhada dos detalhes dourados, dá personalidade e sofisticação à peça.",
       "sizes": [
         "P",
@@ -141,14 +142,14 @@
       "images": [
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_56_45.png",
         "/assets/produtos/ChatGPT Image 22 de set. de 2026, 07_09_06.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "Essenza Preto",
       "name": "Biquíni Essenza Preto",
-      "color": "Preto",
+      "id": "Essenza Preto",
+      "active": true,
       "price": 199.9,
+      "color": "Preto",
       "description": "Elegante e versátil, o Essenza Preto traz top triangular com alças reguláveis e detalhes dourados que valorizam o acabamento da peça. A calcinha possui laterais com argolas douradas e fundo sem costura aparente, deixando o visual mais limpo e sofisticado.",
       "sizes": [
         "P",
@@ -159,14 +160,14 @@
       "images": [
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_04_01.png",
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_09_54.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "Essenza Terra",
       "name": "Biquíni Essenza Terracota",
-      "color": "Terracota",
+      "id": "Essenza Terra",
+      "active": true,
       "price": 199.9,
+      "color": "Terracota",
       "description": "O Essenza Terra aposta em uma tonalidade quente e elegante, combinada aos detalhes dourados. Top triangular com alças reguláveis e calcinha inteira com argolas laterais, além de fundo sem costura aparente, mantendo o acabamento clean da peça",
       "sizes": [
         "P",
@@ -177,26 +178,32 @@
       "images": [
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 19_57_51.png",
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_04_31.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "Essenza Pérola",
       "name": "Biquíni Essenza Pérola",
-      "color": "Pérola",
+      "id": "Essenza Pérola",
+      "active": true,
       "price": 199.9,
+      "color": "Pérola",
       "description": "Delicado e sofisticado, o Essenza Pérola valoriza o brilho sutil do tecido e os detalhes dourados. O top triangular possui alças reguláveis, enquanto a calcinha inteira traz argolas douradas nas laterais e fundo sem costura aparente, proporcionando um acabamento visual mais uniforme.",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
       "images": [
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 19_57_44.png",
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_09_40.png"
-      ],
-      "active": true
+      ]
     },
     {
-      "id": "Verde",
       "name": "Biquíni Essenza Verde",
-      "color": "Verde",
+      "id": "Verde",
+      "active": true,
       "price": 199.9,
+      "color": "Verde",
       "description": "O Essenza Verde combina um tom intenso e sofisticado com detalhes dourados. Possui top triangular com alças reguláveis e calcinha inteira, com argolas laterais douradas e fundo sem costura aparente. Uma cor marcante para destacar a peça sem perder a elegância.",
       "sizes": [
         "P",
@@ -207,8 +214,7 @@
       "images": [
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_39_26-3.png",
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_09_48-1.png"
-      ],
-      "active": true
+      ]
     }
   ]
 }
