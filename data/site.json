@@ -1,6 +1,7 @@
 {
   "whatsappNumber": "5573982484011",
   "instagramUrl": "https://instagram.com/SEU_INSTAGRAM",
+
   "hero": {
     "eyebrow": "RFA.FIT · MODA PRAIA",
     "title": "Moda praia que valoriza você.",
@@ -12,11 +13,61 @@
       "/assets/produtos/verde-01.jpg"
     ]
   },
+
   "collection": {
     "eyebrow": "COLEÇÃO 2026/2027",
     "title": "Escolha seu biquíni.",
     "text": "Modelos cortininha de amarrar, em cores marcantes e com detalhes em pedraria."
   },
+
+  "exclusive": {
+    "eyebrow": "RFA.FIT · EDIÇÃO ESPECIAL",
+    "title": "Modelos Exclusivos",
+    "text": "Modelos especiais produzidos exclusivamente sob encomenda. Escolha seu modelo e fale conosco para consultar cores, tamanhos, prazo e disponibilidade.",
+    "button": "SOLICITAR PELO WHATSAPP",
+
+    "cover": "",
+
+    "models": [
+      {
+        "name": "Hot Pant Essenza",
+        "description": "Modelagem de cintura alta com top estruturado. Uma proposta elegante e versátil para diferentes momentos.",
+        "image": "",
+        "active": true
+      },
+      {
+        "name": "Asa-Delta Elevada",
+        "description": "Cintura alta com cava mais elevada, criando uma modelagem moderna e feminina.",
+        "image": "",
+        "active": true
+      },
+      {
+        "name": "Retrô 70",
+        "description": "Inspirado no estilo retrô, combina cintura alta e estrutura confortável em uma proposta clássica.",
+        "image": "",
+        "active": true
+      },
+      {
+        "name": "Hot Pant Minimal",
+        "description": "Design moderno com linhas limpas e acabamento sofisticado, pensado para quem prefere praticidade e estilo.",
+        "image": "",
+        "active": true
+      },
+      {
+        "name": "Hot Pant Joia",
+        "description": "Detalhes metálicos dão destaque ao modelo e acrescentam um acabamento sofisticado à peça.",
+        "image": "",
+        "active": true
+      },
+      {
+        "name": "Hot Pant Resort",
+        "description": "Modelagem de cintura alta com detalhes laterais e uma proposta sofisticada para praia e piscina.",
+        "image": "",
+        "active": true
+      }
+    ]
+  },
+
   "benefits": {
     "eyebrow": "RFA.FIT",
     "title": "Detalhes que fazem diferença.",
@@ -39,6 +90,7 @@
       }
     ]
   },
+
   "about": {
     "eyebrow": "A MARCA",
     "title": "Mais que moda praia, uma forma de se sentir bem.",
@@ -46,6 +98,7 @@
     "text2": "Escolha sua cor, seu tamanho e fale diretamente com a RFA.FIT para finalizar seu pedido.",
     "image": "/assets/produtos/preto-01.jpg"
   },
+
   "contact": {
     "eyebrow": "ATENDIMENTO",
     "title": "Seu próximo biquíni está a uma mensagem.",
