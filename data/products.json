@@ -250,6 +250,24 @@
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_11_10-1.png",
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_22_56-2.png"
       ]
+    },
+    {
+      "name": "Pérola",
+      "id": "Biquíni Pérola",
+      "active": true,
+      "price": 199.9,
+      "color": "Pérola ",
+      "description": " Um modelo delicado que combina o tom pérola com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto o contraste dos detalhes valoriza o visual com elegância e personalidade.",
+      "sizes": [
+        "P",
+        "M",
+        "G",
+        "GG"
+      ],
+      "images": [
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_11_04-1.png",
+        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_23_02-1.png"
+      ]
     }
   ]
 }
