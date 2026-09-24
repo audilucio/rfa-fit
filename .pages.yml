@@ -4,31 +4,46 @@ media:
 
 content:
   - name: products
-    label: Produtos
+    label: 🩱 Produtos
     type: file
     path: data/products.json
     format: json
     fields:
       - name: products
-        label: Produtos
+        label: Catálogo de biquínis
         type: object
         list: true
         fields:
-          - name: id
-            label: ID
-            type: string
+
           - name: name
-            label: Nome do produto
+            label: Nome do biquíni
             type: string
-          - name: color
-            label: Cor
+            required: true
+
+          - name: id
+            label: Código do produto
             type: string
+            required: true
+            description: "Use um nome curto e único, sem espaços. Exemplo: lunar, onix, perola."
+
+          - name: active
+            label: Mostrar produto na loja
+            type: boolean
+            default: true
+
           - name: price
             label: Preço
             type: number
+            required: true
+
+          - name: color
+            label: Cor
+            type: string
+
           - name: description
             label: Descrição
             type: text
+
           - name: sizes
             label: Tamanhos disponíveis
             type: select
@@ -39,16 +54,14 @@ content:
                 - M
                 - G
                 - GG
+
           - name: images
-            label: Fotos
+            label: Fotos do produto
             type: image
             list: true
-          - name: active
-            label: Produto ativo
-            type: boolean
 
   - name: site
-    label: Página da Loja
+    label: ⚙️ Página da Loja
     type: file
     path: data/site.json
     format: json
@@ -56,33 +69,43 @@ content:
       - name: heroTitle
         label: Título principal
         type: string
+
       - name: heroSubtitle
         label: Subtítulo principal
         type: string
+
       - name: collectionTitle
         label: Título da coleção
         type: string
+
       - name: collectionSubtitle
         label: Texto da coleção
         type: text
+
       - name: aboutTitle
         label: Título da seção A Marca
         type: string
+
       - name: aboutText
         label: Texto sobre a marca
         type: text
+
       - name: contactTitle
         label: Título do atendimento
         type: string
+
       - name: contactText
         label: Texto do atendimento
         type: text
+
       - name: whatsappNumber
         label: WhatsApp
         type: string
+
       - name: instagramUrl
         label: Instagram
         type: string
+
       - name: heroImages
         label: Fotos da capa
         type: image
