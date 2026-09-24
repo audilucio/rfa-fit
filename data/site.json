@@ -28,13 +28,13 @@
         "name": "Hot Pant Essenza",
         "description": "Modelagem de cintura alta com top estruturado. Uma proposta elegante e versátil para diferentes momentos.",
         "image": "/assets/ChatGPT Image 24 de set. de 2026, 00_46_50.png",
-        "active": true
+        "active": false
       },
       {
         "name": "Asa-Delta Elevada",
         "description": "Cintura alta com cava mais elevada, criando uma modelagem moderna e feminina.",
         "image": "/assets/exclusivos/asa-delta-elevada.png",
-        "active": false
+        "active": true
       },
       {
         "name": "Retrô 70",
