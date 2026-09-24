@@ -268,6 +268,14 @@
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_11_04-1.png",
         "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_23_02-1.png"
       ]
+    },
+    {
+      "name": "Terra",
+      "id": "Biquíni Terracota — Terracota",
+      "active": true,
+      "price": 199.9,
+      "color": "Terracota",
+      "description": " Um modelo sofisticado que combina o tom terracota com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto a composição de tons quentes cria um visual elegante e cheio de personalidade."
     }
   ]
 }
