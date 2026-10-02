@@ -1,284 +1,253 @@
 {
   "products": [
     {
-      "name": "Biquíni Cortininha Pérola",
-      "id": "perola",
+      "name": "Biquíni Aurora",
+      "id": "modelo-01",
       "active": true,
       "price": 199.9,
-      "color": "Pérola",
-      "description": "Delicado, ajustável e cheio de personalidade. O modelo cortininha traz amarrações que permitem ajustar a peça ao corpo, com detalhes em pedraria que valorizam o acabamento.",
+      "description": "Modelo RFA.FIT desenvolvido para unir conforto, elegância e acabamento sofisticado.",
       "sizes": [
         "P",
         "M",
         "G",
         "GG"
       ],
-      "images": [
-        "/assets/produtos/perola-03.jpg",
-        "/assets/produtos/ChatGPT Image 21 de set. de 2026, 19_23_37-1.png"
-      ]
-    },
-    {
-      "name": "Biquíni Cortininha Preto",
-      "id": "preto",
-      "active": true,
-      "price": 199.9,
-      "color": "Preto",
-      "description": "Modelo cortininha ajustável, com acabamento elegante e proposta versátil para praia, piscina e momentos de lazer.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/preto-02.jpg",
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 00_32_41.png"
-      ]
-    },
-    {
-      "name": "Biquíni Cortininha Terracota",
-      "id": "terra",
-      "active": true,
-      "price": 199.9,
-      "color": "Terracota",
-      "description": "Modelo cortininha ajustável em tom terra, com visual sofisticado e acabamento pensado para valorizar a peça.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/terra-01.jpg",
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 00_37_09.png"
-      ]
-    },
-    {
-      "name": "Biquíni Cortininha Verde",
-      "id": "verde",
-      "active": true,
-      "price": 199.9,
-      "color": "Verde",
-      "description": "Modelo cortininha ajustável em verde, com proposta elegante e confortável para compor produções de moda praia.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/verde-01.jpg",
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 00_42_06.png"
-      ]
-    },
-    {
-      "name": "Biquíni Lunar",
-      "id": "Lunar",
-      "active": true,
-      "price": 199.9,
-      "color": "Pérola",
-      "description": "Modelo com top cortininha de amarrar e calcinha com acabamento delicado. Os detalhes em pedras e metais dourados dão um toque sofisticado e exclusivo à peça",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/Biquíni branco -1.png",
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 05_50_53.png"
-      ]
-    },
-    {
-      "name": "Biquíni Ônix",
-      "id": "Ônix",
-      "active": true,
-      "price": 199.9,
-      "color": "preto",
-      "description": "Elegância em uma proposta marcante e atemporal. O Biquíni Ônix combina o clássico preto com um delicado detalhe central em pedra e acabamento dourado. O top cortininha possui amarração ajustável, enquanto a calcinha de laterais fixas traz um visual limpo e sofisticado.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_01_28.png",
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_13_04.png"
+      "lining": "Forro confeccionado em tecido Luna, proporcionando conforto, suavidade e toque agradável em contato com a pele.",
+      "accessories": "Acessórios metálicos com banho de acabamento, desenvolvido para proporcionar maior resistência ao uso, ajudar a preservar o brilho e oferecer mais conforto em ambientes de sol e calor.",
+      "variants": [
+        {
+          "name": "Pérola",
+          "color": "Pérola",
+          "description": "Biquíni Aurora na cor Pérola. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo01-perola-01.jpg"
+          ]
+        },
+        {
+          "name": "Preto",
+          "color": "Preto",
+          "description": "Biquíni Aurora na cor Preto. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo01-preto-01.jpg"
+          ]
+        },
+        {
+          "name": "Terracota",
+          "color": "Terracota",
+          "description": "Biquíni Aurora na cor Terracota. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo01-terracota-01.jpg"
+          ]
+        },
+        {
+          "name": "Verde",
+          "color": "Verde",
+          "description": "Biquíni Aurora na cor Verde. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo01-verde-01.jpg"
+          ]
+        }
       ]
     },
     {
       "name": "Biquíni Essenza",
-      "id": "Essenza",
+      "id": "modelo-02",
       "active": true,
       "price": 199.9,
-      "color": "Verde",
-      "description": "Biquíni de modelagem elegante, com top cortininha de amarrar e calcinha de laterais fixas. O detalhe central em pedra com acabamento dourado traz personalidade e sofisticação à peça. Nesta versão em verde, a tonalidade intensa valoriza o brilho sutil do tecido e destaca o acabamento.",
+      "description": "Modelo RFA.FIT desenvolvido para unir conforto, elegância e acabamento sofisticado.",
       "sizes": [
         "P",
         "M",
         "G",
         "GG"
       ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_36_59.png",
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_45_00.png"
+      "lining": "Forro confeccionado em tecido Luna, proporcionando conforto, suavidade e toque agradável em contato com a pele.",
+      "accessories": "Acessórios metálicos com banho de acabamento, desenvolvido para proporcionar maior resistência ao uso, ajudar a preservar o brilho e oferecer mais conforto em ambientes de sol e calor.",
+      "variants": [
+        {
+          "name": "Pérola",
+          "color": "Pérola",
+          "description": "Biquíni Essenza na cor Pérola. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo02-perola-01.jpg",
+            "/assets/produtos/modelo02-perola-02.jpg",
+            "/assets/produtos/modelo02-perola-02.png"
+          ]
+        },
+        {
+          "name": "Preto",
+          "color": "Preto",
+          "description": "Biquíni Essenza na cor Preto. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo02-preto-01.jpg",
+            "/assets/produtos/modelo02-preto-01.png"
+          ]
+        },
+        {
+          "name": "Terracota",
+          "color": "Terracota",
+          "description": "Biquíni Essenza na cor Terracota. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo02-terracota-01.jpg"
+          ]
+        },
+        {
+          "name": "Verde",
+          "color": "Verde",
+          "description": "Biquíni Essenza na cor Verde. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo02-verde-01.jpg"
+          ]
+        }
       ]
     },
     {
-      "name": "Biquíni Essenza Terracota",
-      "id": "Terra",
+      "name": "Biquíni Lumina",
+      "id": "modelo-03",
       "active": true,
       "price": 199.9,
-      "color": "Terracota",
-      "description": "Um modelo elegante que une a tonalidade terrosa ao brilho delicado do tecido. O top cortininha com amarração permite ajuste, enquanto a calcinha de laterais fixas mantém um visual limpo e moderno. A pedra central em tom âmbar, acompanhada dos detalhes dourados, dá personalidade e sofisticação à peça.",
+      "description": "Modelo RFA.FIT desenvolvido para unir conforto, elegância e acabamento sofisticado.",
       "sizes": [
         "P",
         "M",
         "G",
         "GG"
       ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 06_56_45.png",
-        "/assets/produtos/ChatGPT Image 22 de set. de 2026, 07_09_06.png"
+      "lining": "Forro confeccionado em tecido Luna, proporcionando conforto, suavidade e toque agradável em contato com a pele.",
+      "accessories": "Acessórios metálicos com banho de acabamento, desenvolvido para proporcionar maior resistência ao uso, ajudar a preservar o brilho e oferecer mais conforto em ambientes de sol e calor.",
+      "variants": [
+        {
+          "name": "Pérola",
+          "color": "Pérola",
+          "description": "Biquíni Lumina na cor Pérola. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo03-perola-01.jpg",
+            "/assets/produtos/modelo03-perola-02.jpg"
+          ]
+        },
+        {
+          "name": "Preto",
+          "color": "Preto",
+          "description": "Biquíni Lumina na cor Preto. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo03-preto-01.jpg"
+          ]
+        },
+        {
+          "name": "Terracota",
+          "color": "Terracota",
+          "description": "Biquíni Lumina na cor Terracota. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo03-terracota-01.jpg"
+          ]
+        },
+        {
+          "name": "Verde",
+          "color": "Verde",
+          "description": "Biquíni Lumina na cor Verde. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo03-verde-01.jpg"
+          ]
+        }
       ]
     },
     {
-      "name": "Biquíni Essenza Preto",
-      "id": "Essenza Preto",
+      "name": "Biquíni Riviera",
+      "id": "modelo-04",
       "active": true,
       "price": 199.9,
-      "color": "Preto",
-      "description": "Elegante e versátil, o Essenza Preto traz top triangular com alças reguláveis e detalhes dourados que valorizam o acabamento da peça. A calcinha possui laterais com argolas douradas e fundo sem costura aparente, deixando o visual mais limpo e sofisticado.",
+      "description": "Modelo RFA.FIT desenvolvido para unir conforto, elegância e acabamento sofisticado.",
       "sizes": [
         "P",
         "M",
         "G",
         "GG"
       ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_04_01.png",
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_09_54.png"
+      "lining": "Forro confeccionado em tecido Luna, proporcionando conforto, suavidade e toque agradável em contato com a pele.",
+      "accessories": "Acessórios metálicos com banho de acabamento, desenvolvido para proporcionar maior resistência ao uso, ajudar a preservar o brilho e oferecer mais conforto em ambientes de sol e calor.",
+      "variants": [
+        {
+          "name": "Pérola",
+          "color": "Pérola",
+          "description": "Biquíni Riviera na cor Pérola. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo04-perola-01.jpg",
+            "/assets/produtos/modelo04-perola-01.png"
+          ]
+        },
+        {
+          "name": "Preto",
+          "color": "Preto",
+          "description": "Biquíni Riviera na cor Preto. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo04-preto-01.jpg"
+          ]
+        },
+        {
+          "name": "Terracota",
+          "color": "Terracota",
+          "description": "Biquíni Riviera na cor Terracota. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo04-terracota-01.jpg"
+          ]
+        },
+        {
+          "name": "Verde",
+          "color": "Verde",
+          "description": "Biquíni Riviera na cor Verde. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
+          "images": [
+            "/assets/produtos/modelo04-verde-01.jpg"
+          ]
+        }
       ]
     },
     {
-      "name": "Biquíni Essenza Terracota",
-      "id": "Essenza Terra",
+      "name": "Biquíni Jade",
+      "id": "modelo-05",
       "active": true,
       "price": 199.9,
-      "color": "Terracota",
-      "description": "O Essenza Terra aposta em uma tonalidade quente e elegante, combinada aos detalhes dourados. Top triangular com alças reguláveis e calcinha inteira com argolas laterais, além de fundo sem costura aparente, mantendo o acabamento clean da peça",
+      "description": "O Biquíni Jade combina design elegante, conforto e acabamento sofisticado. O top possui detalhe central com pedra decorativa, criando um visual marcante e refinado.",
       "sizes": [
         "P",
         "M",
         "G",
         "GG"
       ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 19_57_51.png",
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_04_31.png"
-      ]
-    },
-    {
-      "name": "Biquíni Essenza Pérola",
-      "id": "Essenza Pérola",
-      "active": true,
-      "price": 199.9,
-      "color": "Pérola",
-      "description": "Delicado e sofisticado, o Essenza Pérola valoriza o brilho sutil do tecido e os detalhes dourados. O top triangular possui alças reguláveis, enquanto a calcinha inteira traz argolas douradas nas laterais e fundo sem costura aparente, proporcionando um acabamento visual mais uniforme.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 19_57_44.png",
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_09_40.png"
-      ]
-    },
-    {
-      "name": "Biquíni Essenza Verde",
-      "id": "Verde",
-      "active": true,
-      "price": 199.9,
-      "color": "Verde",
-      "description": "O Essenza Verde combina um tom intenso e sofisticado com detalhes dourados. Possui top triangular com alças reguláveis e calcinha inteira, com argolas laterais douradas e fundo sem costura aparente. Uma cor marcante para destacar a peça sem perder a elegância.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 17_39_26-3.png",
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 20_09_48-1.png"
-      ]
-    },
-    {
-      "name": "Biquíni Esmeralda",
-      "id": "Esmeralda",
-      "active": true,
-      "price": 199.9,
-      "color": "Verde",
-      "description": "Um modelo marcante que combina o verde intenso com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto os detalhes decorativos trazem personalidade e sofisticação ao visual.\nDetalhes: top cortininha de amarrar • calcinha de amarrar nas laterais • pedras decorativas vermelhas • detalhes dourados • brilho sutil no tecido • produção RFA.FIT.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_11_17.png"
-      ]
-    },
-    {
-      "name": "Ônix",
-      "id": "Ôni",
-      "active": true,
-      "price": 199.9,
-      "color": "Preto",
-      "description": " Um modelo elegante que combina o preto clássico com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto os detalhes decorativos criam um visual sofisticado e marcante.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_11_10-1.png",
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_22_56-2.png"
-      ]
-    },
-    {
-      "name": "Pérola",
-      "id": "Biquíni Pérola",
-      "active": true,
-      "price": 199.9,
-      "color": "Pérola ",
-      "description": " Um modelo delicado que combina o tom pérola com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto o contraste dos detalhes valoriza o visual com elegância e personalidade.",
-      "sizes": [
-        "P",
-        "M",
-        "G",
-        "GG"
-      ],
-      "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_11_04-1.png",
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_23_02-1.png"
-      ]
-    },
-    {
-      "name": "Terra",
-      "id": "Biquíni Terracota — Terracota",
-      "active": true,
-      "price": 199.9,
-      "color": "Terracota",
-      "description": " Um modelo sofisticado que combina o tom terracota com detalhes em pedras vermelhas e acabamento dourado. O top cortininha e a calcinha de amarrar permitem ajuste da peça, enquanto a composição de tons quentes cria um visual elegante e cheio de personalidade.",
-      "images": [
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_10_56-1.png",
-        "/assets/produtos/ChatGPT Image 23 de set. de 2026, 23_23_14.png"
+      "lining": "Forro confeccionado em tecido Luna, proporcionando conforto, suavidade e toque agradável em contato com a pele.",
+      "accessories": "Acessórios metálicos com banho de acabamento, desenvolvido para proporcionar maior resistência ao uso, ajudar a preservar o brilho e oferecer mais conforto em ambientes de sol e calor.",
+      "variants": [
+        {
+          "name": "Pérola",
+          "color": "Pérola",
+          "description": "Biquíni Jade na cor Pérola, com visual delicado, sofisticado e acabamento luminoso.",
+          "images": [
+            "/assets/produtos/modelo05-perola-01.png"
+          ]
+        },
+        {
+          "name": "Preto",
+          "color": "Preto",
+          "description": "Biquíni Jade na cor Preto, com proposta elegante, atemporal e marcante.",
+          "images": [
+            "/assets/produtos/modelo05-preto-01.png"
+          ]
+        },
+        {
+          "name": "Terracota",
+          "color": "Terracota",
+          "description": "Biquíni Jade na cor Terracota, com tonalidade quente e sofisticada.",
+          "images": [
+            "/assets/produtos/modelo05-terracota-01.png"
+          ]
+        },
+        {
+          "name": "Verde",
+          "color": "Verde",
+          "description": "Biquíni Jade na cor Verde, com visual intenso, elegante e tropical.",
+          "images": [
+            "/assets/produtos/modelo05-verde-01.png"
+          ]
+        }
       ]
     }
   ]

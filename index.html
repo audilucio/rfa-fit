@@ -107,8 +107,51 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
 .detail-copy{padding:55px 42px 42px}
 .detail-copy h2{font-size:42px;margin:10px 0}
 .detail-copy .detail-price{font-size:25px;font-weight:700;margin:18px 0}
-.swatches{display:flex;gap:8px;margin:20px 0}
-.swatch{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px}
+.swatches{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
+.swatch{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;cursor:pointer}
+.swatch.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+.card-colors{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin:10px 0 14px;
+}
+
+.card-color{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:11px;
+  cursor:pointer;
+}
+
+.card-color:hover{
+  background:var(--ink);
+  color:#fff;
+  border-color:var(--ink);
+}
+
+.tech-box{
+  margin:20px 0;
+  padding:16px 18px;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:16px;
+}
+
+.tech-box strong{
+  display:block;
+  margin-bottom:10px;
+}
+
+.tech-box p{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.55;
+  margin:6px 0;
+}
 .size-grid{display:flex;gap:8px;margin:9px 0 20px}
 .size{width:48px;height:42px;border:1px solid var(--line);background:#fff;border-radius:10px}
 .size.active{background:var(--ink);color:white;border-color:var(--ink)}
@@ -264,6 +307,12 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
         <h2 id="modalName"></h2>
         <div class="detail-price" id="modalPrice"></div>
         <p id="modalDescription"></p>
+
+        <strong>CORES DISPONÍVEIS</strong>
+        <div class="swatches" id="colorSwatches"></div>
+
+        <div class="tech-box" id="technicalDetails"></div>
+
         <strong>TAMANHO</strong>
         <div class="size-grid" id="sizeGrid"></div>
         <button class="size-guide-btn" type="button" onclick="toggleSizeGuide()">Ver tabela de tamanhos</button>
@@ -303,6 +352,7 @@ let SITE = null;
 let HEROES = [];
 
 let currentProduct = null;
+let currentVariantIndex = 0;
 let currentImage = 0;
 let selectedSize = "M";
 let currentQty = 1;
@@ -324,20 +374,195 @@ function setWhatsLinks(){
   document.getElementById("floatingWhats").href = href;
 }
 
-function renderProducts(){
-  const grid = document.getElementById("productGrid");
-  grid.innerHTML = PRODUCTS.map(p => `
-    <article class="card">
-      <button style="border:0;background:none;padding:0;width:100%;text-align:left" onclick="openProduct('${p.id}')">
-        <div class="card-media"><img src="${p.images[0]}" alt="${p.name}" loading="lazy"></div>
-      </button>
-      <div class="card-body">
-        <div class="card-title">${p.name}</div>
-        <div class="card-meta">${p.color} · Cortininha de amarrar</div>
-        <div class="card-row"><span class="price">${money(p.price)}</span><button class="small-btn" onclick="openProduct('${p.id}')">VER PEÇA</button></div>
-      </div>
-    </article>
+
+function getProductVariants(product){
+  if(Array.isArray(product?.variants) && product.variants.length){
+    return product.variants;
+  }
+
+  return [{
+    name: product?.color || "Cor única",
+    color: product?.color || "Cor única",
+    images: product?.images || [],
+    description: product?.description || ""
+  }];
+}
+
+function getCurrentVariant(){
+  const variants=getProductVariants(currentProduct);
+  return variants[currentVariantIndex] || variants[0];
+}
+
+function previewCardImage(imageId,src){
+  const img=document.getElementById(imageId);
+  if(img && src) img.src=src;
+}
+
+function renderColorOptions(){
+  const el=document.getElementById("colorSwatches");
+
+  if(!el || !currentProduct)return;
+
+  const variants=getProductVariants(currentProduct);
+
+  el.innerHTML=variants.map((v,index)=>`
+    <button
+      type="button"
+      class="swatch ${index===currentVariantIndex?"active":""}"
+      onclick="selectVariant(${index})"
+    >
+      ${v.name || v.color || `Cor ${index+1}`}
+    </button>
   `).join("");
+}
+
+function selectVariant(index){
+  const variants=getProductVariants(currentProduct);
+
+  if(!variants[index])return;
+
+  currentVariantIndex=index;
+  currentImage=0;
+
+  const variant=getCurrentVariant();
+
+  document.getElementById("modalColor").textContent=
+    variant.name || variant.color || "";
+
+  document.getElementById("modalDescription").textContent=
+    variant.description || currentProduct.description || "";
+
+  renderColorOptions();
+  renderGallery();
+}
+
+function renderTechnicalDetails(){
+  const el=document.getElementById("technicalDetails");
+
+  if(!el || !currentProduct)return;
+
+  const fabric=currentProduct.fabric || {};
+
+  let fabricLine="";
+
+  if(typeof fabric==="string"){
+    fabricLine=fabric;
+  }else{
+    fabricLine=[
+      fabric.name,
+      fabric.composition,
+      fabric.weight
+    ].filter(Boolean).join(" · ");
+  }
+
+  const lining=
+    currentProduct.lining ||
+    "Forro confeccionado em tecido Luna, proporcionando maior conforto, suavidade e toque agradável em contato com a pele.";
+
+  const accessories=
+    currentProduct.accessories ||
+    "Acessórios metálicos com banho de acabamento, desenvolvido para proporcionar maior resistência ao uso, ajudar a preservar o brilho e oferecer mais conforto em ambientes de sol e calor.";
+
+  const features=
+    Array.isArray(fabric.features)
+      ? fabric.features.join(" · ")
+      : "";
+
+  el.innerHTML=`
+    <strong>DETALHES TÉCNICOS</strong>
+
+    ${fabricLine
+      ? `<p><b>Tecido:</b> ${fabricLine}</p>`
+      : ""}
+
+    ${features
+      ? `<p><b>Características:</b> ${features}</p>`
+      : ""}
+
+    <p><b>Forro:</b> ${lining}</p>
+
+    <p><b>Acessórios:</b> ${accessories}</p>
+  `;
+}
+
+function renderProducts(){
+  const grid=document.getElementById("productGrid");
+
+  grid.innerHTML=PRODUCTS.map((p,pIndex)=>{
+    const variants=getProductVariants(p);
+
+    const firstVariant=variants[0] || {};
+
+    const firstImage=
+      (firstVariant.images || p.images || [])[0] || "";
+
+    const imageId=`product-card-image-${pIndex}`;
+
+    const colors=variants.map((v,index)=>{
+      const image=(v.images || [])[0] || firstImage;
+      const label=v.name || v.color || `Cor ${index+1}`;
+
+      return `
+        <button
+          type="button"
+          class="card-color"
+          onmouseenter="previewCardImage('${imageId}','${image}')"
+          onfocus="previewCardImage('${imageId}','${image}')"
+          onclick="event.stopPropagation();openProduct('${p.id}',${index})"
+        >
+          ${label}
+        </button>
+      `;
+    }).join("");
+
+    return `
+      <article class="card">
+
+        <button
+          style="border:0;background:none;padding:0;width:100%;text-align:left"
+          onclick="openProduct('${p.id}',0)"
+        >
+          <div class="card-media">
+            <img
+              id="${imageId}"
+              src="${firstImage}"
+              alt="${p.name}"
+              loading="lazy"
+            >
+          </div>
+        </button>
+
+        <div class="card-body">
+
+          <div class="card-title">${p.name}</div>
+
+          <div class="card-meta">
+            ${variants.length}
+            ${variants.length===1 ? "cor disponível" : "cores disponíveis"}
+          </div>
+
+          <div class="card-colors">
+            ${colors}
+          </div>
+
+          <div class="card-row">
+
+            <span class="price">
+              ${money(p.price)}
+            </span>
+
+            <button
+              class="small-btn"
+              onclick="openProduct('${p.id}',0)"
+            >
+              VER PEÇA
+            </button>
+
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function renderExclusive(){
@@ -366,20 +591,62 @@ function orderExclusive(index){
   window.open(href,"_blank");
 }
 
-function openProduct(id){
-  currentProduct = PRODUCTS.find(p=>p.id===id);
-  if(!currentProduct)return;
-  currentImage=0; currentQty=1; selectedSize=(currentProduct.sizes||["P","M","G","GG"])[0];
+function openProduct(id,variantIndex=0){
+  const produto=PRODUCTS.find(p=>p.id===id);
+
+  if(!produto)return;
+
+  // Zera completamente qualquer modelo anteriormente aberto
+  currentProduct=null;
+  currentVariantIndex=0;
+  currentImage=0;
+  currentQty=1;
+
+  currentProduct=produto;
+
+  const variants=getProductVariants(currentProduct);
+
+  currentVariantIndex=
+    variants[variantIndex] ? variantIndex : 0;
+
+  currentImage=0;
+
+  selectedSize=
+    (currentProduct.sizes || ["P","M","G","GG"])[0];
+
   document.getElementById("sizeGuide").classList.remove("open");
-  document.getElementById("modalName").textContent=currentProduct.name;
-  document.getElementById("modalColor").textContent=currentProduct.color;
-  document.getElementById("modalPrice").textContent=money(currentProduct.price);
-  document.getElementById("modalDescription").textContent=currentProduct.description;
+
+  document.getElementById("modalName").textContent=
+    currentProduct.name;
+
+  const variant=getCurrentVariant();
+
+  document.getElementById("modalColor").textContent=
+    variant?.name || variant?.color || "";
+
+  document.getElementById("modalPrice").textContent=
+    money(currentProduct.price);
+
+  document.getElementById("modalDescription").textContent=
+    variant?.description ||
+    currentProduct.description ||
+    "";
+
   document.getElementById("qty").textContent=currentQty;
-  renderSizes(); renderGallery();
+
+  // limpa visualmente a galeria anterior antes de montar a nova
+  document.getElementById("modalImage").removeAttribute("src");
+  document.getElementById("thumbs").innerHTML="";
+
+  renderColorOptions();
+  renderTechnicalDetails();
+  renderSizes();
+  renderGallery();
+
   document.getElementById("productModal").classList.add("open");
   document.body.style.overflow="hidden";
 }
+
 function closeProduct(){document.getElementById("productModal").classList.remove("open");document.body.style.overflow=""}
 function backdropClose(e){if(e.target.id==="productModal")closeProduct()}
 function renderSizes(){
@@ -389,55 +656,321 @@ function renderSizes(){
 }
 function selectSize(s){selectedSize=s;renderSizes()}
 function toggleSizeGuide(){document.getElementById("sizeGuide").classList.toggle("open")}
-function renderGallery(){
-  document.getElementById("modalImage").src=currentProduct.images[currentImage];
-  document.getElementById("modalImage").alt=currentProduct.name;
-  document.getElementById("thumbs").innerHTML=currentProduct.images.map((src,i)=>`<button class="thumb ${i===currentImage?"active":""}" onclick="setImage(${i})"><img src="${src}" alt=""></button>`).join("");
+
+function getAllProductImages(){
+  if(!currentProduct){
+    return [];
+  }
+
+  const productId=currentProduct.id;
+  const variants=getProductVariants(currentProduct);
+
+  const images=[];
+
+  variants.forEach((variant,variantIndex)=>{
+    const variantImages=Array.isArray(variant.images)
+      ? variant.images
+      : [];
+
+    variantImages.forEach((src,imageIndex)=>{
+      images.push({
+        productId,
+        variantIndex,
+        imageIndex,
+        src,
+        color:variant.name || variant.color || ""
+      });
+    });
+  });
+
+  return images.filter(
+    item => item.productId===currentProduct.id
+  );
 }
-function setImage(i){currentImage=i;renderGallery()}
-function changeImage(dir){
-  currentImage=(currentImage+dir+currentProduct.images.length)%currentProduct.images.length;
+
+function updateVariantInfo(){
+  const variant=getCurrentVariant();
+
+  if(!variant)return;
+
+  document.getElementById("modalColor").textContent=
+    variant.name || variant.color || "";
+
+  document.getElementById("modalDescription").textContent=
+    variant.description ||
+    currentProduct.description ||
+    "";
+
+  renderColorOptions();
+}
+
+function renderGallery(){
+  if(!currentProduct)return;
+
+  const productId=currentProduct.id;
+  const allImages=getAllProductImages();
+
+  if(!allImages.length){
+    document.getElementById("modalImage").removeAttribute("src");
+    document.getElementById("thumbs").innerHTML="";
+    return;
+  }
+
+  let globalIndex=allImages.findIndex(
+    item =>
+      item.productId===productId &&
+      item.variantIndex===currentVariantIndex &&
+      item.imageIndex===currentImage
+  );
+
+  if(globalIndex<0){
+    globalIndex=0;
+    currentVariantIndex=allImages[0].variantIndex;
+    currentImage=allImages[0].imageIndex;
+  }
+
+  const atual=allImages[globalIndex];
+
+  // segurança adicional contra troca de modelo
+  if(atual.productId!==currentProduct.id){
+    return;
+  }
+
+  const img=document.getElementById("modalImage");
+
+  img.src=atual.src;
+  img.alt=`${currentProduct.name} ${atual.color}`;
+
+  document.getElementById("thumbs").innerHTML=
+    allImages.map((item,index)=>`
+      <button
+        class="thumb ${index===globalIndex?"active":""}"
+        onclick="setImage(${index})"
+        title="${item.color}"
+      >
+        <img
+          src="${item.src}"
+          alt="${currentProduct.name} ${item.color}"
+        >
+      </button>
+    `).join("");
+}
+
+function setImage(globalIndex){
+  if(!currentProduct)return;
+
+  const allImages=getAllProductImages();
+  const item=allImages[globalIndex];
+
+  if(!item)return;
+  if(item.productId!==currentProduct.id)return;
+
+  currentVariantIndex=item.variantIndex;
+  currentImage=item.imageIndex;
+
+  updateVariantInfo();
   renderGallery();
 }
+
+function changeImage(dir){
+  if(!currentProduct)return;
+
+  const productId=currentProduct.id;
+  const allImages=getAllProductImages();
+
+  if(!allImages.length)return;
+
+  let globalIndex=allImages.findIndex(
+    item =>
+      item.productId===productId &&
+      item.variantIndex===currentVariantIndex &&
+      item.imageIndex===currentImage
+  );
+
+  if(globalIndex<0){
+    globalIndex=0;
+  }
+
+  globalIndex=
+    (globalIndex + dir + allImages.length) %
+    allImages.length;
+
+  const proxima=allImages[globalIndex];
+
+  if(!proxima || proxima.productId!==productId){
+    return;
+  }
+
+  currentVariantIndex=proxima.variantIndex;
+  currentImage=proxima.imageIndex;
+
+  updateVariantInfo();
+  renderGallery();
+}
+
 function changeQty(delta){currentQty=Math.max(1,currentQty+delta);document.getElementById("qty").textContent=currentQty}
 function addToCart(){
-  const item={id:currentProduct.id,size:selectedSize,qty:currentQty};
-  const existing=cart.find(i=>i.id===item.id&&i.size===item.size);
-  if(existing)existing.qty+=item.qty; else cart.push(item);
-  saveCart(); closeProduct(); openCart();
+  const variant=getCurrentVariant();
+
+  const item={
+    id:currentProduct.id,
+    variantIndex:currentVariantIndex,
+    color:variant?.name || variant?.color || "",
+    size:selectedSize,
+    qty:currentQty
+  };
+
+  const existing=cart.find(i=>
+    i.id===item.id &&
+    (i.variantIndex ?? 0)===item.variantIndex &&
+    i.size===item.size
+  );
+
+  if(existing){
+    existing.qty+=item.qty;
+  }else{
+    cart.push(item);
+  }
+
+  saveCart();
+  closeProduct();
+  openCart();
 }
+
 function removeCart(index){cart.splice(index,1);saveCart()}
 function saveCart(){localStorage.setItem("rfaFitCart",JSON.stringify(cart));renderCart()}
 function renderCart(){
-  document.getElementById("cartCount").textContent=cart.reduce((a,i)=>a+i.qty,0);
+  document.getElementById("cartCount").textContent=
+    cart.reduce((a,i)=>a+i.qty,0);
+
   const el=document.getElementById("cartItems");
-  if(!cart.length){el.innerHTML="<p style='color:var(--muted)'>Sua sacola está vazia.</p>";document.getElementById("cartTotal").textContent=money(0);return}
+
+  if(!cart.length){
+    el.innerHTML=
+      "<p style='color:var(--muted)'>Sua sacola está vazia.</p>";
+
+    document.getElementById("cartTotal").textContent=
+      money(0);
+
+    return;
+  }
+
   let total=0;
+
   el.innerHTML=cart.map((item,index)=>{
-    const p=PRODUCTS.find(x=>x.id===item.id); if(!p)return "";
-    const subtotal=p.price*item.qty; total+=subtotal;
-    return `<div class="cart-item">
-      <img src="${p.images[0]}" alt="${p.name}">
-      <div><h4>${p.name}</h4><small>Tamanho ${item.size} · ${item.qty} un.</small><div style="margin-top:7px;font-weight:700">${money(subtotal)}</div></div>
-      <button class="cart-remove" onclick="removeCart(${index})">remover</button>
-    </div>`;
+    const p=PRODUCTS.find(x=>x.id===item.id);
+
+    if(!p)return "";
+
+    const variants=getProductVariants(p);
+
+    const variant=
+      variants[item.variantIndex ?? 0] ||
+      variants[0];
+
+    const subtotal=p.price*item.qty;
+
+    total+=subtotal;
+
+    const image=
+      (variant?.images || p.images || [])[0] ||
+      "";
+
+    const color=
+      item.color ||
+      variant?.name ||
+      variant?.color ||
+      "";
+
+    return `
+      <div class="cart-item">
+
+        <img
+          src="${image}"
+          alt="${p.name}"
+        >
+
+        <div>
+
+          <h4>${p.name}</h4>
+
+          <small>
+            ${color ? `Cor ${color} · ` : ""}
+            Tamanho ${item.size} ·
+            ${item.qty} un.
+          </small>
+
+          <div style="margin-top:7px;font-weight:700">
+            ${money(subtotal)}
+          </div>
+
+        </div>
+
+        <button
+          class="cart-remove"
+          onclick="removeCart(${index})"
+        >
+          remover
+        </button>
+
+      </div>
+    `;
   }).join("");
-  document.getElementById("cartTotal").textContent=money(total);
+
+  document.getElementById("cartTotal").textContent=
+    money(total);
 }
+
 function openCart(){renderCart();document.getElementById("cartDrawer").classList.add("open");document.body.style.overflow="hidden"}
 function closeCart(){document.getElementById("cartDrawer").classList.remove("open");document.body.style.overflow=""}
 function buildOrderMessage(){
   if(!cart.length)return "";
-  let lines=["Olá! Quero fazer este pedido pela RFA.FIT:",""];
+
+  let lines=[
+    "Olá! Quero fazer este pedido pela RFA.FIT:",
+    ""
+  ];
+
   let total=0;
+
   cart.forEach(i=>{
-    const p=PRODUCTS.find(x=>x.id===i.id); if(!p)return;
+    const p=PRODUCTS.find(x=>x.id===i.id);
+
+    if(!p)return;
+
+    const variants=getProductVariants(p);
+
+    const variant=
+      variants[i.variantIndex ?? 0] ||
+      variants[0];
+
+    const color=
+      i.color ||
+      variant?.name ||
+      variant?.color ||
+      "";
+
     total+=p.price*i.qty;
-    lines.push(`• ${p.name} — Tamanho ${i.size} — ${i.qty} un. — ${money(p.price*i.qty)}`);
+
+    lines.push(
+      `• ${p.name}` +
+      `${color ? ` — Cor ${color}` : ""}` +
+      ` — Tamanho ${i.size}` +
+      ` — ${i.qty} un.` +
+      ` — ${money(p.price*i.qty)}`
+    );
   });
-  lines.push("",`Subtotal: ${money(total)}`,"","Pode me confirmar disponibilidade e as formas de pagamento?");
+
+  lines.push(
+    "",
+    `Subtotal: ${money(total)}`,
+    "",
+    "Pode me confirmar disponibilidade e as formas de pagamento?"
+  );
+
   return lines.join("\n");
 }
+
 function checkoutWhatsApp(){
   if(!cart.length){alert("Sua sacola está vazia.");return}
   const href=waLink(buildOrderMessage());
@@ -445,11 +978,33 @@ function checkoutWhatsApp(){
   window.open(href,"_blank");
 }
 function buyNow(){
-  const temp=[{id:currentProduct.id,size:selectedSize,qty:currentQty}];
-  const old=cart; cart=temp; const href=waLink(buildOrderMessage()); cart=old;
-  if(href==="#"){alert("Configure seu número de WhatsApp no código antes de finalizar.");return}
+  const variant=getCurrentVariant();
+
+  const temp=[{
+    id:currentProduct.id,
+    variantIndex:currentVariantIndex,
+    color:variant?.name || variant?.color || "",
+    size:selectedSize,
+    qty:currentQty
+  }];
+
+  const old=cart;
+
+  cart=temp;
+
+  const href=
+    waLink(buildOrderMessage());
+
+  cart=old;
+
+  if(href==="#"){
+    alert("Configure seu número de WhatsApp no código antes de finalizar.");
+    return;
+  }
+
   window.open(href,"_blank");
 }
+
 function setupHero(){
   const image=document.getElementById("heroImage");
   const dots=document.getElementById("heroDots");
