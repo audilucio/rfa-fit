@@ -77,8 +77,7 @@
           "color": "Preto",
           "description": "Biquíni Essenza na cor Preto. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
           "images": [
-            "/assets/produtos/modelo02-preto-01.jpg",
-            "/assets/produtos/modelo02-preto-01.png"
+            "/assets/produtos/modelo02-preto-01.jpg"
           ]
         },
         {
@@ -119,8 +118,7 @@
           "color": "Pérola",
           "description": "Biquíni Lumina na cor Pérola. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
           "images": [
-            "/assets/produtos/modelo03-perola-01.jpg",
-            "/assets/produtos/modelo03-perola-02.jpg"
+            "/assets/produtos/modelo03-perola-01.jpg"
           ]
         },
         {
@@ -169,8 +167,7 @@
           "color": "Pérola",
           "description": "Biquíni Riviera na cor Pérola. Selecione a imagem para visualizar os detalhes e o acabamento da peça.",
           "images": [
-            "/assets/produtos/modelo04-perola-01.jpg",
-            "/assets/produtos/modelo04-perola-01.png"
+            "/assets/produtos/modelo04-perola-01.jpg"
           ]
         },
         {
