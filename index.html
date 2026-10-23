@@ -548,7 +548,15 @@ function renderProducts(){
           <div class="card-row">
 
             <span class="price">
-              ${money(p.price)}
+              <span style="display:block;font-size:11px;color:#217447;font-weight:700">
+                PREÇO PROMOCIONAL
+              </span>
+              <del style="font-size:13px;color:#888;font-weight:400">
+                R$ 199,90
+              </del>
+              <span style="display:block">
+                ${money(p.price)}
+              </span>
             </span>
 
             <button
@@ -624,8 +632,20 @@ function openProduct(id,variantIndex=0){
   document.getElementById("modalColor").textContent=
     variant?.name || variant?.color || "";
 
-  document.getElementById("modalPrice").textContent=
-    money(currentProduct.price);
+  document.getElementById("modalPrice").innerHTML=
+    `<span style="display:block;font-size:13px;color:#217447;font-weight:700">
+       PREÇO PROMOCIONAL
+     </span>
+     <del style="font-size:15px;color:#888;font-weight:400">
+       R$ 199,90
+     </del>
+     <span style="display:block">
+       ${money(currentProduct.price)}
+     </span>
+     <small style="display:block;font-size:12px;font-weight:400">
+       Oferta especial por tempo limitado.
+       Condições de atacado sob consulta.
+     </small>`;
 
   document.getElementById("modalDescription").textContent=
     variant?.description ||
