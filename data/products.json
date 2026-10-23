@@ -4,7 +4,7 @@
       "name": "Biquíni Aurora",
       "id": "modelo-01",
       "active": true,
-      "price": 199.9,
+      "price": 99.9,
       "description": "Modelo RFA.FIT desenvolvido para unir conforto, elegância e acabamento sofisticado.",
       "sizes": [
         "P",
@@ -53,7 +53,7 @@
       "name": "Biquíni Essenza",
       "id": "modelo-02",
       "active": true,
-      "price": 199.9,
+      "price": 99.9,
       "description": "Modelo RFA.FIT desenvolvido para unir conforto, elegância e acabamento sofisticado.",
       "sizes": [
         "P",
@@ -102,7 +102,7 @@
       "name": "Biquíni Lumina",
       "id": "modelo-03",
       "active": true,
-      "price": 199.9,
+      "price": 99.9,
       "description": "Modelo RFA.FIT desenvolvido para unir conforto, elegância e acabamento sofisticado.",
       "sizes": [
         "P",
@@ -151,7 +151,7 @@
       "name": "Biquíni Riviera",
       "id": "modelo-04",
       "active": true,
-      "price": 199.9,
+      "price": 99.9,
       "description": "Modelo RFA.FIT desenvolvido para unir conforto, elegância e acabamento sofisticado.",
       "sizes": [
         "P",
@@ -200,7 +200,7 @@
       "name": "Biquíni Jade",
       "id": "modelo-05",
       "active": true,
-      "price": 199.9,
+      "price": 99.9,
       "description": "O Biquíni Jade combina design elegante, conforto e acabamento sofisticado. O top possui detalhe central com pedra decorativa, criando um visual marcante e refinado.",
       "sizes": [
         "P",
