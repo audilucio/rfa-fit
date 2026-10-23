@@ -199,6 +199,7 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
   .product-detail{grid-template-columns:1fr}.gallery{padding:10px}.detail-copy{padding:28px 22px 25px}.detail-copy h2{font-size:34px}
 }
 </style>
+<link rel="stylesheet" href="/assets/referrals.css">
 </head>
 <body>
 
@@ -286,7 +287,9 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
 </section>
 </main>
 
+<section id="referralPromo" class="referral-section" hidden><span>RFA.FIT — INDIQUE &amp; GANHE</span><h2>Estilo que se compartilha.</h2><p>Compartilhe seu link e acompanhe suas indicações.</p><div class="referral-levels"><div>Indique 3 amigas e ganhe 10% OFF.</div><div>Indique 6 amigas e ganhe 20% OFF.</div><div>Indique 9 amigas e ganhe 30% OFF.</div></div><p>Um benefício individual, válido por 30 dias. Resgatar encerra sua progressão.</p><a class="btn" href="/indicacoes.html">CONHEÇA O PROGRAMA →</a></section>
 <footer><div class="container">© <span id="year"></span> RFA.FIT · MODA PRAIA</div></footer>
+
 
 <a id="floatingWhats" class="floating-whats" href="#" target="_blank" rel="noopener" aria-label="WhatsApp">◉</a>
 
@@ -336,8 +339,9 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
     <div class="cart-head"><strong>Sua sacola</strong><button class="icon-btn" onclick="closeCart()">×</button></div>
     <div class="cart-items" id="cartItems"></div>
     <div class="cart-footer">
+      <div id="couponBox" hidden><label for="couponInput">Cupom individual</label><input id="couponInput" maxlength="30" placeholder="RFA-…" style="width:100%;padding:10px;box-sizing:border-box"><button type="button" id="applyCoupon">Aplicar / remover</button><p><a href="/indicacoes.html">Entrar no Indique &amp; Ganhe</a></p><p id="couponStatus" role="status" aria-live="polite"></p></div>
       <div class="total"><span>Subtotal</span><span id="cartTotal">R$ 0,00</span></div>
-      <button class="btn whats" style="width:100%" onclick="checkoutWhatsApp()">FINALIZAR NO WHATSAPP</button>
+      <div id="validatedTotals" hidden><div class="total"><span>Desconto</span><span id="cartDiscount">R$ 0,00</span></div><div class="total"><span>Total</span><span id="cartFinal">R$ 0,00</span></div><p>Frete a confirmar no atendimento.</p></div><button class="btn whats" style="width:100%" onclick="checkoutWhatsApp()">FINALIZAR NO WHATSAPP</button>
       <div class="notice">O pedido será enviado para confirmação de disponibilidade, tamanho e pagamento.</div>
     </div>
   </aside>
@@ -356,7 +360,8 @@ let currentVariantIndex = 0;
 let currentImage = 0;
 let selectedSize = "M";
 let currentQty = 1;
-let cart = JSON.parse(localStorage.getItem("rfaFitCart") || "[]");
+let cart = [];
+try { const saved = JSON.parse(localStorage.getItem("rfaFitCart") || "[]"); if(Array.isArray(saved)) cart = saved.filter(i => i && typeof i.id === "string" && Number.isInteger(i.qty) && i.qty > 0 && i.qty <= 20 && ["P","M","G","GG"].includes(i.size) && Number.isInteger(i.variantIndex) && i.variantIndex >= 0 && i.variantIndex < 4); } catch {}
 let heroIndex = 0;
 
 function money(v){
@@ -1072,5 +1077,6 @@ async function boot(){
 }
 boot();
 </script>
+<script src="/assets/cart-referrals.js"></script>
 </body>
 </html>

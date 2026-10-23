@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Indique & Ganhe — RFA.FIT</title>
+    <link rel="stylesheet" href="/assets/referrals.css" />
+  </head>
+  <body class="campaign-body">
+    <main class="campaign-main">
+      <a href="/">← Voltar à loja RFA.FIT</a>
+      <h1>Indique & Ganhe</h1>
+      <p>Compartilhe seu link e acompanhe suas indicações.</p>
+      <div class="referral-levels">
+        <div>Indique 3 amigas e ganhe 10% OFF.</div>
+        <div>Indique 6 amigas e ganhe 20% OFF.</div>
+        <div>Indique 9 amigas e ganhe 30% OFF.</div>
+      </div>
+      <p>
+        Sem exigir compra das amigas. Cadastros distintos, com e-mail confirmado
+        e aprovação de legitimidade, contam para seu benefício.
+      </p>
+      <p id="status" role="status" aria-live="polite">
+        Consultando disponibilidade…
+      </p>
+      <section id="registration" class="campaign-card" hidden>
+        <h2>Seu acesso seguro</h2>
+        <p>
+          Cadastre-se ou entre pelo link de uso único enviado ao seu e-mail. Não
+          informe contatos de outras pessoas.
+        </p>
+        <form id="join">
+          <label
+            >Seu e-mail<input
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              maxlength="254" /></label
+          ><label class="honeypot" aria-hidden="true"
+            >Site<input
+              name="website"
+              tabindex="-1"
+              autocomplete="off" /></label
+          ><label
+            ><input name="consent" type="checkbox" required /> Li e aceito o
+            <a href="/regulamento.html">regulamento</a> e a
+            <a href="/privacidade.html">política de privacidade</a>. Não
+            autorizo publicidade por este cadastro.</label
+          ><button>Enviar link de acesso</button>
+        </form>
+      </section>
+      <section id="dashboard" class="campaign-card" hidden>
+        <h2>Seu painel</h2>
+        <p id="counts"></p>
+        <progress
+          id="progress"
+          max="9"
+          value="0"
+          aria-label="Progresso das indicações"
+        ></progress>
+        <p>3 → 10% · 6 → 20% · 9 → 30%</p>
+        <p><code id="shareLink"></code></p>
+        <button id="copy">Copiar link</button
+        ><a id="share" target="_blank" rel="noopener"
+          >Compartilhar pelo WhatsApp</a
+        >
+        <p>
+          Para Instagram ou outras redes, copie o link e compartilhe
+          voluntariamente.
+        </p>
+        <button id="redeem">Resgatar desconto disponível</button>
+        <p>
+          Resgatar em 3 ou 6 indicações encerra sua progressão. Um único
+          benefício por participante nesta campanha.
+        </p>
+        <p id="coupon"></p>
+        <button id="refresh">Atualizar painel</button>
+        <div id="orders"></div>
+        <button id="deletion">Solicitar exclusão dos meus dados</button
+        ><button id="logout">Sair</button>
+      </section>
+      <p>
+        <a href="/regulamento.html">Regulamento</a> ·
+        <a href="/privacidade.html">Privacidade</a>
+      </p>
+    </main>
+    <script type="module" src="/assets/referrals.js"></script>
+  </body>
+</html>

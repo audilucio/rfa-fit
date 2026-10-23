@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.bkp
+*.bkp-*
+backups/
+test-results/
+playwright-report/
+.vercel/

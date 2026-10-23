@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Administração — RFA.FIT</title>
+    <link rel="stylesheet" href="/assets/referrals.css" />
+  </head>
+  <body class="campaign-body">
+    <main class="campaign-main">
+      <a href="/indicacoes.html">Acesso por e-mail</a>
+      <h1>Administração de indicações</h1>
+      <p>
+        Acesso restrito aos e-mails autorizados. Revise a legitimidade antes de
+        aprovar. Antes de confirmar uma venda, confira o pedido, pagamento e a
+        identidade do titular.
+      </p>
+      <p role="status" id="status"></p>
+      <button id="load">Atualizar</button
+      ><label
+        >Motivo da ação (sem dados pessoais)<input
+          id="reason"
+          minlength="8"
+          maxlength="300" /></label
+      ><label
+        ><input type="checkbox" id="verified" /> Confirmei pagamento e
+        identidade do titular da venda.</label
+      >
+      <div id="records"></div>
+    </main>
+    <script type="module" src="/assets/admin-referrals.js"></script>
+  </body>
+</html>

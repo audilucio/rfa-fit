@@ -1,0 +1,26 @@
+{
+  "name": "rfa-fit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:browser": "node scripts/browser-test.js",
+    "dev": "node scripts/dev.js",
+    "db:migrate": "node scripts/migrate.js",
+    "check": "node scripts/check.js",
+    "test:integration": "node scripts/integration-test.js",
+    "test:browser:real": "node scripts/browser-real-test.js"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.14",
+    "@playwright/test": "^1.56.1",
+    "prettier": "^3.9.10"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}
