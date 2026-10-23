@@ -107,9 +107,110 @@ try {
   await page.waitForFunction(() =>
     document.getElementById("orders").textContent.includes("cancelled"),
   );
+  // Exercise the protected admin UI against the real local API, including sale confirmation.
+  const review = await transaction(async (c) => {
+    const r = await s.register(c, {
+      email: `review-${suffix}@example.net`,
+      consent: true,
+    });
+    const token = await s.verify(c, r.token);
+    return s.participant(c, token);
+  });
+  const pending = await page.evaluate(async (coupon) => {
+    const r = await fetch("/api/referral", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "checkout",
+        coupon,
+        items: [{ id: "modelo-01", variantIndex: 0, size: "M", qty: 2 }],
+      }),
+    });
+    if (!r.ok) throw Error("Second local test order failed");
+    return r.json();
+  }, coupon);
+  await person("admin@example.com");
+  const adminLogin = await transaction((c) =>
+    s.register(c, { email: "admin@example.com", consent: true }),
+  );
+  const adminContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+  });
+  const adminPage = await adminContext.newPage();
+  await adminPage.goto(
+    `http://127.0.0.1:3008/indicacoes.html#token=${adminLogin.token}`,
+  );
+  await adminPage.locator("#dashboard").waitFor({ state: "visible" });
+  await adminPage.goto("http://127.0.0.1:3008/admin-indicacoes.html");
+  await adminPage.waitForFunction(() =>
+    document.getElementById("status").textContent.includes("Últimos 200"),
+  );
+  await adminPage
+    .locator("#reason")
+    .fill("Cadastro sintético revisado em teste");
+  await adminPage
+    .locator(".admin-record")
+    .filter({ has: adminPage.locator("pre").filter({ hasText: review.id }) })
+    .filter({
+      has: adminPage.getByRole("button", { name: "Aprovar legitimidade" }),
+    })
+    .getByRole("button", { name: "Aprovar legitimidade" })
+    .click();
+  await adminPage.waitForFunction(
+    (id) =>
+      [...document.querySelectorAll(".admin-record pre")].some((p) => {
+        try {
+          const v = JSON.parse(p.textContent);
+          return v.id === id && v.approved === true;
+        } catch {
+          return false;
+        }
+      }),
+    review.id,
+  );
+  await adminPage
+    .locator("#reason")
+    .fill("Pagamento fictício e titular conferidos no teste");
+  await adminPage.locator("#verified").check();
+  await adminPage
+    .locator(".admin-record")
+    .filter({ has: adminPage.locator("pre").filter({ hasText: pending.id }) })
+    .filter({ has: adminPage.getByRole("button", { name: "Confirmar venda" }) })
+    .getByRole("button", { name: "Confirmar venda" })
+    .click();
+  await adminPage.waitForFunction(
+    (id) =>
+      [...document.querySelectorAll(".admin-record pre")].some((p) => {
+        try {
+          const v = JSON.parse(p.textContent);
+          return v.id === id && v.status === "confirmed";
+        } catch {
+          return false;
+        }
+      }),
+    pending.id,
+  );
+  assert.equal(
+    (await transaction((c) => s.dashboard(c, owner))).coupon.used,
+    true,
+  );
+  const reuse = await page.evaluate(async (coupon) => {
+    const r = await fetch("/api/referral", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "checkout",
+        coupon,
+        items: [{ id: "modelo-01", variantIndex: 0, size: "M", qty: 2 }],
+      }),
+    });
+    return r.status;
+  }, coupon);
+  assert.equal(reuse, 400);
+  await adminContext.close();
   assert.deepEqual(errors, []);
   console.log(
-    "Fluxo móvel REAL: link de acesso, cookie, painel, resgate, cupom, cotação, pedido e link WhatsApp idênticos ao servidor e cancelamento passaram. E-mail e envio no WhatsApp não realizados.",
+    "Fluxo móvel REAL: link de acesso, cookie, painel, resgate, cupom, cotação, pedido e link WhatsApp idênticos ao servidor e cancelamento, aprovação no painel administrativo e confirmação de venda sintética passaram. Cupom consumido uma vez; e-mail e envio no WhatsApp não realizados.",
   );
 } finally {
   await browser?.close();

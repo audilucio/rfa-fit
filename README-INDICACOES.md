@@ -1,6 +1,6 @@
 # RFA.FIT — Indique & Ganhe
 
-Implementação entregue com a campanha **desativada por padrão**. A loja estática e `data/products.json` foram preservados. Não há banco de produção, provedor de e-mail nem ambiente Vercel configurados por este trabalho. Não ativar somente porque o código foi enviado ao GitHub.
+Campanha **desativada**. Na etapa 2 foram provisionados dois bancos Neon Free exclusivos (produção e homologação), aplicada a migração e configuradas as variáveis disponíveis no projeto Vercel `rfa-fit-loja`. As conexões tiveram certificado e TLS 1.3 validados. Falta conectar o Resend com um domínio remetente próprio verificável e validar entrega real de e-mail antes da ativação. A loja estática e `data/products.json` foram preservados. Veja o [relatório da etapa 2](ATIVACAO-ETAPA-2.md).
 
 ## Arquivos e arquitetura
 
@@ -18,7 +18,7 @@ Implementação entregue com a campanha **desativada por padrão**. A loja está
 
 1. Provisionar PostgreSQL com TLS e pool de conexões compatível com serverless (por exemplo, plano gratuito de Neon ou Supabase, sujeito aos limites do fornecedor). Não foi criada conta nem contratado plano. Usar projeto exclusivo, backups e acesso mínimo; nunca expor conexão no HTML ou `config.js`.
 2. Configurar Resend e validar domínio remetente (DNS). O código envia apenas e-mail de acesso/confirmação, sem campanhas comerciais. Não usar domínio de teste para clientes reais.
-3. Configurar no ambiente Vercel as variáveis de `.env.example`. `IDENTITY_SECRET` deve ser aleatório, de pelo menos 32 caracteres (recomendado 32 bytes aleatórios em hex). Manter estável: a troca invalida identidade pseudonimizada, sessões e tokens; exige plano de migração. `ADMIN_EMAILS` contém e-mails completos autorizados, separados por vírgula. Administradores usam o mesmo acesso por e-mail, sem senha compartilhada.
+3. As variáveis de banco, chave de identidade, origem, administrador e flag desativada já estão configuradas na Vercel. Completar `RESEND_API_KEY` e `EMAIL_FROM`, sem placeholders, conforme `.env.example`. `IDENTITY_SECRET` deve ser aleatório, de pelo menos 32 caracteres (recomendado 32 bytes aleatórios em hex). Manter estável: a troca invalida identidade pseudonimizada, sessões e tokens; exige plano de migração. `ADMIN_EMAILS` contém e-mails completos autorizados, separados por vírgula. Administradores usam o mesmo acesso por e-mail, sem senha compartilhada.
 4. Aplicar a migração com `DATABASE_URL` e, em produção, verificação TLS. `npm run db:migrate`. Migração transacional e idempotente; não apaga dados. Preferir credencial de migração separada da credencial de runtime, com permissão apenas nas tabelas necessárias.
 5. Revisar dados do controlador, política, legitimidade/interesse legítimo, contratos de operadores, transferência internacional, prazo da campanha e procedimento de retenção com o responsável pela loja. Textos fornecem o fluxo implementado; não substituem definição dessas responsabilidades pelo controlador.
 6. Testar primeiro em implantação de preview isolada, com banco próprio: cadastrar endereços reais controlados, receber e-mail de verdade, verificar expiração e uso único, acessar como admin, aprovar participante e três indicadas distintas, resgatar, validar sacola e WhatsApp, cancelar/expirar reserva e confirmar uma venda sintética. Conferir cookie Secure sobre HTTPS, restrições de origem e acesso anônimo negado.
@@ -47,6 +47,8 @@ O responsável deve revisar periodicamente retenção e direitos, responder soli
 
 ## Desenvolvimento e testes
 
+Conexões com `sslmode` injetado por integrações são normalizadas em `lib/db-config.js` para preservar a validação de certificado. `PGSSL=disable` é rejeitado fora de loopback. Não usar `POSTGRES_URL_NO_SSL` fornecida automaticamente pelo provedor.
+
 Node.js 24. `npm ci`, `npm run dev`, abrir `http://127.0.0.1:3000`. Variáveis podem ser carregadas com `node --env-file=.env scripts/dev.js` (e analogamente migração). Não disponibilizar esse servidor local na internet.
 
 ```sh
@@ -65,7 +67,7 @@ docker run -d --name rfa-fit-referral-test -e POSTGRES_USER=rfa_test -e POSTGRES
 DATABASE_URL=postgresql://rfa_test:synthetic_local_only@127.0.0.1:55439/rfa_test npm run test:integration
 ```
 
-O teste recusa outra URL; usa só dados sintéticos. E-mail transacional é simulado e não confirma entrega real do Resend. Navegador testa 360/390/768/1440 px, loja desativada e checkout legado; fluxo visual ativo usa fixtures de API. API real testa sessão, proteção de origem, admin negado, reserva e resgate concorrentes, totais e rate limiting. O fluxo móvel também foi testado contra API e PostgreSQL reais com `DATABASE_URL=postgresql://rfa_test:synthetic_local_only@127.0.0.1:55439/rfa_test npm run test:browser:real`: token, cookie, painel, resgate, aplicação de cupom, totais, link WhatsApp idêntico à mensagem do servidor e cancelamento de reserva, sem mocks de API. Isso não substitui smoke test HTTPS, e-mail entregue e WhatsApp efetivamente recebido em produção.
+O teste recusa outra URL; usa só dados sintéticos. E-mail transacional é simulado e não confirma entrega real do Resend. Navegador testa 360/390/768/1440 px, loja desativada e checkout legado; fluxo visual ativo usa fixtures de API. API real testa sessão, proteção de origem, admin negado, reserva e resgate concorrentes, totais e rate limiting. O fluxo móvel também foi testado contra API e PostgreSQL reais com `DATABASE_URL=postgresql://rfa_test:synthetic_local_only@127.0.0.1:55439/rfa_test npm run test:browser:real`: token, cookie, painel, resgate, aplicação de cupom, totais, link WhatsApp idêntico à mensagem do servidor e cancelamento de reserva, sem mocks de API. O teste móvel também exercita a aprovação de cadastro no painel e a confirmação administrativa de uma venda sintética, recusando reutilização do cupom. Isso não substitui smoke test HTTPS, e-mail entregue e WhatsApp efetivamente recebido em produção.
 
 ## Publicação, backup e referências
 
@@ -74,3 +76,11 @@ Backup inicial de `index.html`, `config.js` e catálogo em `/tmp/rfa-fit-backup-
 O push para `origin/main` permite implantação automática se a integração Git/Vercel já existir. Validar o status externo; não presumir deploy bem-sucedido só por push. Rota prevista: `https://rfa-fit-loja.vercel.app/indicacoes.html`; permanece indisponível até configuração e validação reais.
 
 Referências primárias consultadas: [Vercel Node.js](https://vercel.com/docs/functions/runtimes/node-js), [transações node-postgres](https://node-postgres.com/features/transactions), [Resend](https://resend.com/docs/api-reference/emails/send-email), [LGPD, arts. 16 e 18](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm).
+
+## Verificações da etapa 2
+
+`npm run test:public` verifica a loja publicada em celular e desktop, o preço de R$ 99,90, o checkout legado, as rotas internas protegidas e o bloqueio da campanha. Requer a campanha desativada e não cria cadastros nem envia mensagens.
+
+`node --env-file=.env.preview.local scripts/staging-smoke.js` verifica o PostgreSQL Neon real pelo pooler, incluindo 0/1/2/3/6/9/10, resgate, reservas, confirmação administrativa e limites. Recusa qualquer projeto diferente do Neon exclusivo de homologação e reverte toda a transação ao terminar. Não usar credenciais de produção nesse teste. `.env.preview.local` é ignorado no Git, tem modo 0600 e contém somente credenciais de homologação; não é publicado.
+
+O teste no Neon exercita a camada de regras diretamente, sem afirmar entrega de e-mail. O teste de navegador ativo usa API e PostgreSQL locais isolados. A produção foi verificada com a campanha desativada.

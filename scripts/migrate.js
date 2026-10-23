@@ -1,9 +1,7 @@
 import { readFileSync } from "node:fs";
 import pg from "pg";
-const c = new pg.Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.PGSSL === "disable" ? false : { rejectUnauthorized: true },
-});
+import { databaseConfig } from "../lib/db-config.js";
+const c = new pg.Client(databaseConfig());
 await c.connect();
 try {
   await c.query("BEGIN");
