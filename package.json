@@ -10,7 +10,8 @@
     "db:migrate": "node scripts/migrate.js",
     "check": "node scripts/check.js",
     "test:integration": "node scripts/integration-test.js",
-    "test:browser:real": "node scripts/browser-real-test.js"
+    "test:browser:real": "node scripts/browser-real-test.js",
+    "build": "node scripts/build.js"
   },
   "dependencies": {
     "pg": "^8.16.3"

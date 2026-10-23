@@ -8,3 +8,4 @@ backups/
 test-results/
 playwright-report/
 .vercel/
+public/

@@ -5,6 +5,7 @@ Implementação entregue com a campanha **desativada por padrão**. A loja está
 ## Arquivos e arquitetura
 
 - `index.html`: seção da campanha e sacola; checkout legado preservado quando desativada.
+- `scripts/build.js`: gera `public/` com lista explícita de arquivos públicos; backend, testes, documentação operacional e backups ficam fora da publicação estática. APIs são empacotadas separadamente como Vercel Functions.
 - `assets/*referrals*`: interface responsiva, participante, sacola e administração.
 - `indicacoes.html`, `admin-indicacoes.html`, `regulamento.html`, `privacidade.html`: páginas do programa.
 - `api/referral.js`: função Node.js 24 para Vercel, mesma origem, limite de corpo, cookie HttpOnly/SameSite e envio transacional via Resend.
@@ -51,6 +52,7 @@ Node.js 24. `npm ci`, `npm run dev`, abrir `http://127.0.0.1:3000`. Variáveis p
 ```sh
 npm test
 npm run check
+npm run build
 npm audit
 npx playwright install chromium
 npm run test:browser
