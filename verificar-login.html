@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>Verificação de login — RFA.FIT</title>
+    <link rel="stylesheet" href="/assets/referrals.css" />
+  </head>
+  <body class="campaign-body">
+    <main class="campaign-main">
+      <a href="/">← Voltar à loja</a>
+      <h1>Verificar login Google</h1>
+      <p>
+        Acesso restrito à conta administradora da RFA.FIT. Esta página confirma
+        a autenticação real sem abrir a campanha ao público.
+      </p>
+      <p id="status" role="status" aria-live="polite">
+        Consultando configuração…
+      </p>
+      <section id="registration" class="campaign-card" hidden>
+        <form id="join">
+          <label class="honeypot" aria-hidden="true"
+            >Site<input
+              name="website"
+              tabindex="-1"
+              autocomplete="off" /></label
+          ><label
+            ><input name="consent" type="checkbox" required /> Li e aceito o
+            <a href="/regulamento.html">regulamento</a> e a
+            <a href="/privacidade.html">política de privacidade</a>.</label
+          ><button id="prepareGoogle">Continuar com Google</button>
+        </form>
+        <div id="googleSignIn" aria-label="Entrar com Google"></div>
+      </section>
+      <section id="verified" class="campaign-card" hidden>
+        <h2>Login Google confirmado pelo servidor</h2>
+        <p>
+          Assinatura, identidade administrativa, sessão e acesso ao banco
+          validados. A campanha continua desativada até a conclusão dos testes
+          de indicações e compra.
+        </p>
+        <button id="logout">Sair</button>
+      </section>
+      <p>
+        Não há resgate, indicação, cupom ou venda disponíveis por esta página.
+        Não informe senha Google, Client Secret ou tokens no atendimento.
+      </p>
+    </main>
+    <script type="module" src="/assets/verify-google.js"></script>
+  </body>
+</html>

@@ -188,6 +188,22 @@ try {
     (await transaction((c) => s.dashboard(c, owner.p))).coupon.used,
     true,
   );
+  process.env.REFERRALS_ENABLED = "false";
+  await admin.page.goto(base + "/verificar-login.html");
+  await admin.page.locator("#verified").waitFor({ state: "visible" });
+  assert.ok(
+    (await admin.page.locator("#status").innerText()).includes(
+      "permanece desativada",
+    ),
+  );
+  await page.goto(base + "/verificar-login.html");
+  await page.locator("#registration").waitFor({ state: "visible" });
+  assert.equal(await page.locator("#verified").isHidden(), true);
+  assert.ok(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  );
   assert.deepEqual(errors, []);
   console.log(
     "Mobile full stack OK: Google SDK/RSA local fixtures, consent, challenge/nonce, login/session, referral, administrative approval, single redemption, cart and WhatsApp totals, cancellation and sale confirmation. Real Google authentication NOT tested.",

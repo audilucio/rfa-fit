@@ -4,12 +4,11 @@ import { hash } from "../lib/domain.js";
 import { isGoogleClientId, verifyGoogleIdToken } from "../lib/google-auth.js";
 import * as service from "../lib/service.js";
 export const config = { maxDuration: 30 };
-function enabled() {
+function authConfigured() {
   try {
     const origin = new URL(process.env.APP_ORIGIN);
     const local = ["localhost", "127.0.0.1", "[::1]"].includes(origin.hostname);
     return (
-      process.env.REFERRALS_ENABLED === "true" &&
       ["DATABASE_URL", "IDENTITY_SECRET", "ADMIN_EMAILS"].every(
         (k) => process.env[k],
       ) &&
@@ -23,6 +22,8 @@ function enabled() {
     return false;
   }
 }
+const enabled = () =>
+  process.env.REFERRALS_ENABLED === "true" && authConfigured();
 const cookie = (req, name) =>
   String(req.headers.cookie || "")
     .split(";")
@@ -43,7 +44,8 @@ export function createHandler({
     if (req.method === "GET") {
       res.status(200).json({
         enabled: !!enabled(),
-        googleClientId: enabled() ? process.env.GOOGLE_CLIENT_ID : null,
+        authenticationAvailable: !!authConfigured(),
+        googleClientId: authConfigured() ? process.env.GOOGLE_CLIENT_ID : null,
       });
       return;
     }
@@ -51,7 +53,7 @@ export function createHandler({
       res.status(405).json({ error: "Método não permitido." });
       return;
     }
-    if (!enabled()) {
+    if (!authConfigured()) {
       res
         .status(503)
         .json({ error: "Campanha indisponível. A loja continua funcionando." });
@@ -76,6 +78,17 @@ export function createHandler({
         throw Error();
     } catch {
       res.status(400).json({ error: "Requisição inválida." });
+      return;
+    }
+    const diagnostic =
+      b.purpose === "admin-check" &&
+      ["googleChallenge", "googleLogin", "authStatus", "logout"].includes(
+        b.action,
+      );
+    if (!enabled() && !diagnostic) {
+      res
+        .status(503)
+        .json({ error: "Campanha indisponível. A loja continua funcionando." });
       return;
     }
     const ip = String(
@@ -118,6 +131,8 @@ export function createHandler({
       const result = await transact(async (c) => {
         await service.expire(c);
         if (b.action === "googleChallenge") {
+          if (diagnostic && b.ref)
+            throw Error("A verificação administrativa não aceita indicação.");
           const ch = await service.googleChallenge(c, b.ref);
           res.setHeader(
             "Set-Cookie",
@@ -127,6 +142,17 @@ export function createHandler({
         }
         if (b.action === "googleLogin") {
           const token = await service.googleLogin(c, claims, b, challenge);
+          if (diagnostic) {
+            const admin = await service.participant(c, token);
+            if (!(await service.isAdmin(c, admin)))
+              throw Error(
+                "Esta verificação é restrita à conta Google administradora.",
+              );
+            await c.query(
+              "INSERT INTO audit(actor,event,target) VALUES($1,$2,$3)",
+              [admin.id, "google_admin_verification", admin.id],
+            );
+          }
           res.setHeader("Set-Cookie", [
             sessionCookie("rfa_session", token, 604800),
             sessionCookie("rfa_google_login", "", 0),
@@ -153,6 +179,16 @@ export function createHandler({
         if (["quote", "checkout"].includes(b.action))
           return service.checkout(c, b, p, b.action === "checkout");
         p ??= await service.participant(c, session);
+        if (b.action === "authStatus") {
+          if (!diagnostic || !(await service.isAdmin(c, p)))
+            throw Error("Acesso administrativo negado.");
+          return {
+            authenticated: true,
+            administrator: true,
+            databaseConnected: true,
+            campaignEnabled: !!enabled(),
+          };
+        }
         if (b.action === "dashboard")
           return {
             ...(await service.dashboard(c, p)),

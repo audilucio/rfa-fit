@@ -2,7 +2,7 @@
 
 O fluxo atual usa **Google Identity Services / OpenID Connect**. Não exige Resend, remetente de e-mail, SMS, domínio próprio ou client secret. Neon Free, Vercel e a loja HTML/JavaScript foram preservados. Nenhum plano pago, cartão ou faturamento foi ativado.
 
-A campanha permanece **desativada**: ainda falta criar/autorizar o OAuth Web Client ID da RFA.FIT no console Google e validar autenticação real. A presença de código e testes locais não comprova login real nem autoriza ativação. Veja [ATIVACAO-GOOGLE.md](ATIVACAO-GOOGLE.md). O relatório da etapa 2 é histórico; sua pendência Resend foi substituída.
+A campanha permanece **desativada**: o OAuth Web Client ID real já foi fornecido e configurado na Vercel, mas ainda é necessário confirmar o login real e validar os fluxos autorizados antes da abertura. A presença de código e testes locais não comprova login real nem autoriza ativação. Veja [ATIVACAO-GOOGLE.md](ATIVACAO-GOOGLE.md). O relatório da etapa 2 é histórico; sua pendência Resend foi substituída.
 
 ## Configuração existente
 
@@ -32,7 +32,13 @@ O modo implementado é popup com callback JavaScript, seguido de POST JSON no me
 
 Copiar o Client ID real para `GOOGLE_CLIENT_ID` na Vercel, nos ambientes correspondentes, e reimplantar. Não criar valor fictício para preencher o campo. Não habilitar faturamento, Firebase Identity Platform, serviços de SMS ou e-mail. Qualquer autorização/publicação do aplicativo exigida pelo console deve ser feita pelo titular, sem contornar a verificação.
 
-Esse passo ainda não foi executado: não foi encontrado Client ID RFA.FIT nem autenticação gcloud disponível. As demais variáveis já estão configuradas; a flag continua false. **Não alterar a flag só por preencher o Client ID**: antes de publicar a campanha, verificar login Google real em HTTPS, administrador correto, indicações aprovadas, resgate, valores, reserva e confirmação de venda no ambiente autorizado. Esta entrega não alega essa validação real.
+O Client ID real já foi fornecido pelo titular e configurado em production/preview/development. As demais variáveis estão preservadas; a flag continua false. A configuração do console Google deve permitir a origem exata indicada acima. **Não alterar a flag só por preencher o Client ID**: antes de publicar a campanha, verificar login Google real em HTTPS, administrador correto, indicações aprovadas, resgate, valores, reserva e confirmação de venda no ambiente autorizado. Esta entrega não alega essa validação real.
+
+## Verificar Google sem abrir a campanha
+
+`/verificar-login.html` usa o botão Google oficial e os mesmos controles de assinatura, nonce, CSRF e sessão. Com a campanha desativada, só são permitidos desafio/login/status/logout de diagnóstico, com `purpose: admin-check`. O login precisa resultar em uma identidade administrativa autorizada; tentativa de outro usuário reverte cadastro e sessão. Não libera `dashboard`, aprovação de participantes, cupons, resgates, checkout nem configuração de ambiente. O Client ID público pode ser consultado na API quando a autenticação está configurada, independentemente da campanha.
+
+A página confirma acesso ao banco e vínculo administrativo, com evento `google_admin_verification` na auditoria. O botão não ativa `REFERRALS_ENABLED`. Deve ser usada pelo titular para fornecer a comprovação real que um navegador automatizado sem sua conta Google não consegue produzir.
 
 ## Autenticação, identidade e segurança
 

@@ -1,13 +1,6 @@
-export async function api(action, data = {}) {
-  const r = await fetch("/api/referral", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ action, ...data }),
-  });
-  const b = await r.json();
-  if (!r.ok) throw Error(b.error || "Serviço indisponível.");
-  return b;
-}
+import { api } from "./referral-api.js";
+import { attachGoogleLogin } from "./google-login.js";
+export { api };
 const $ = (id) => document.getElementById(id);
 const status = (s) => ($("status").textContent = s);
 let link = "";
@@ -58,82 +51,15 @@ async function run(fn) {
   }
 }
 let googleClientId = "";
-let sdkPromise;
-let prepared = false;
-function loadGoogle() {
-  if (window.google?.accounts?.id) return Promise.resolve();
-  if (sdkPromise) return sdkPromise;
-  sdkPromise = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.onload = resolve;
-    script.onerror = () => {
-      sdkPromise = null;
-      script.remove();
-      reject(Error("Não foi possível carregar o Google. Tente novamente."));
-    };
-    document.head.append(script);
-  });
-  return sdkPromise;
-}
-$("join").onsubmit = (e) => {
-  e.preventDefault();
-  run(async () => {
-    if (prepared) {
-      location.reload();
-      return;
-    }
-    const f = new FormData(e.target);
-    if (f.get("consent") !== "on")
-      throw Error("Aceite o regulamento e a política de privacidade.");
-    const button = $("prepareGoogle");
-    button.disabled = true;
-    try {
-      const ch = await api("googleChallenge", {
-        ref: new URLSearchParams(location.search).get("ref") || "",
-      });
-      await loadGoogle();
-      window.google.accounts.id.initialize({
-        client_id: googleClientId,
-        nonce: ch.nonce,
-        auto_select: false,
-        ux_mode: "popup",
-        callback: (response) =>
-          run(async () => {
-            try {
-              await api("googleLogin", {
-                credential: response.credential,
-                csrfToken: ch.csrfToken,
-                consent: new FormData($("join")).get("consent") === "on",
-                website: f.get("website"),
-              });
-              $("googleSignIn").replaceChildren();
-              await panel();
-            } finally {
-              button.disabled = false;
-            }
-          }),
-      });
-      prepared = true;
-      button.textContent = "Reiniciar acesso";
-      $("googleSignIn").replaceChildren();
-      window.google.accounts.id.renderButton($("googleSignIn"), {
-        type: "standard",
-        theme: "outline",
-        size: "large",
-        text: "signin_with",
-        width: Math.min(320, $("registration").clientWidth - 48),
-        locale: "pt-BR",
-      });
-      status(
-        "Selecione sua conta no botão do Google. O acesso expira em 5 minutos.",
-      );
-    } finally {
-      button.disabled = false;
-    }
-  });
-};
+attachGoogleLogin({
+  clientId: () => googleClientId,
+  form: $("join"),
+  container: $("googleSignIn"),
+  button: $("prepareGoogle"),
+  status,
+  onSuccess: panel,
+  ref: () => new URLSearchParams(location.search).get("ref") || "",
+});
 $("copy").onclick = () =>
   run(async () => {
     await navigator.clipboard.writeText(link);

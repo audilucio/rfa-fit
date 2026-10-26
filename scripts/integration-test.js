@@ -296,6 +296,74 @@ assert.equal(
 );
 process.env.REFERRALS_ENABLED = "false";
 assert.equal((await api({ action: "googleChallenge" })).status, 503);
+// A disabled campaign permits only the diagnostic login of the administrator.
+const diag = async (email) => {
+  const ch = await api({ action: "googleChallenge", purpose: "admin-check" });
+  assert.equal(ch.status, 200);
+  const credential = await fixture.sign(email, ch.result.nonce);
+  return api(
+    {
+      action: "googleLogin",
+      purpose: "admin-check",
+      credential,
+      csrfToken: ch.result.csrfToken,
+      consent: true,
+    },
+    { cookie: "rfa_google_login=" + ch.result.csrfToken },
+  );
+};
+const outsidersBefore = Number(
+  (await client.query("SELECT count(*) FROM participants")).rows[0].count,
+);
+const unauthorized = await diag(`diagnostic-outsider-${suffix}@example.com`);
+assert.equal(unauthorized.status, 400);
+assert.equal(unauthorized.headers["Set-Cookie"], undefined);
+assert.equal(
+  Number(
+    (await client.query("SELECT count(*) FROM participants")).rows[0].count,
+  ),
+  outsidersBefore,
+  "Failed diagnostic login must roll back registration",
+);
+const diagnosticAdmin = await diag("admin@gmail.com");
+assert.equal(diagnosticAdmin.status, 200);
+const diagnosticCookie = diagnosticAdmin.headers["Set-Cookie"][0].split(";")[0];
+const proof = await api(
+  { action: "authStatus", purpose: "admin-check" },
+  { cookie: diagnosticCookie },
+);
+assert.equal(proof.status, 200);
+assert.equal(proof.result.administrator, true);
+assert.equal(proof.result.campaignEnabled, false);
+for (const action of [
+  "redeem",
+  "checkout",
+  "dashboard",
+  "admin",
+  "deleteRequest",
+])
+  assert.equal(
+    (
+      await api(
+        { action, purpose: "admin-check" },
+        { cookie: diagnosticCookie },
+      )
+    ).status,
+    503,
+  );
+assert.equal(
+  (
+    await api(
+      { action: "authStatus", purpose: "admin-check" },
+      { cookie: owner.cookie },
+    )
+  ).status,
+  400,
+);
+assert.equal(
+  (await api({ action: "authStatus" }, { cookie: diagnosticCookie })).status,
+  503,
+);
 await client.end();
 console.log(
   "Integration OK: PostgreSQL real, RSA fixtures, CSRF/nonce, Google session, admin pinning, idempotent migration, redemption/reservation concurrency, sale confirmation, totals, rate limits. No real Google login simulated as production.",

@@ -8,20 +8,22 @@ Implementação sobre o sistema existente, com validação final em 26/10/2026. 
 - Login Google implementado com assinatura RS256/JWKS Google, issuer, audience, expiração, email verificado, `sub`, nonce, proteção CSRF e desafio de uso único. Sessão própria segura.
 - Identidade vinculada ao `sub`, com histórico de contatos e revisão administrativa. Administrador fixado à identidade Google após bootstrap confiável. Login não elimina fraude nem aprova automaticamente indicações.
 - Migração aditiva `002_google_identity.sql` aplicada em produção e homologação com TLS validado, com histórico de aplicação para não expirar sessões novas em reexecuções. Sem apagar participantes, pedidos ou cupons.
-- Produção continua com `REFERRALS_ENABLED=false`. As variáveis existentes de Neon, origem, identidade e administrador permanecem. `GOOGLE_CLIENT_ID` não foi preenchida com credencial fictícia.
+- Produção continua com `REFERRALS_ENABLED=false`. As variáveis existentes de Neon, origem, identidade e administrador permanecem. `GOOGLE_CLIENT_ID` já foi configurada em production, preview e development com o ID real fornecido pelo titular.
 
-## Única ação externa indispensável
+## Client ID configurado e validação real pendente
 
-Criar/autorizar um **OAuth Client ID do tipo Web**, exclusivo da RFA.FIT, no [Google Auth Platform](https://console.cloud.google.com/auth/clients), por uma conta com acesso ao projeto Google. Não foram encontradas autenticação gcloud ou credenciais OAuth RFA.FIT existentes no ambiente/projeto Vercel. Não foram reutilizadas credenciais de outros projetos.
+O titular criou o OAuth Web Client e forneceu seu ID. A variável `GOOGLE_CLIENT_ID` foi configurada na Vercel para production, preview e development; o arquivo local ignorado de homologação também foi atualizado. O Client ID não é secreto, mas seu valor não precisa ser versionado. Nenhum Client Secret foi solicitado ou armazenado.
+
+Acesse [verificar-login.html](https://rfa-fit-loja.vercel.app/verificar-login.html), aceite os termos e entre com a **conta Google administradora**. O servidor verifica assinatura, audience, nonce, sessão e autorização administrativa e registra a comprovação na auditoria. A confirmação dessa página não habilita a campanha: resgates, cadastros de participantes comuns e pedidos do programa continuam bloqueados. Contas não administrativas são recusadas e o cadastro é revertido atomicamente.
 
 Configuração para o titular:
 
 1. Nome do aplicativo: RFA.FIT — Indique & Ganhe. Configurar público externo/usuários de teste e autorização/publicação conforme as exigências do console. Não ativar Billing nem Identity Platform pago.
 2. Origem JavaScript autorizada: **`https://rfa-fit-loja.vercel.app`** (sem caminho/barra final). Usar a origem Vercel existente; não é necessário comprar domínio para o código implementado. Para testes reais em preview/localhost, autorizar a origem exata correspondente e definir `APP_ORIGIN` corretamente; sem wildcard.
 3. Página inicial: `https://rfa-fit-loja.vercel.app/`; privacidade: `/privacidade.html`; regulamento: `/regulamento.html`. O fluxo é popup/callback JavaScript, sem endpoint de troca de código e sem necessidade de Client Secret no servidor.
-4. Definir o Client ID real em **`GOOGLE_CLIENT_ID`** nas variáveis Vercel da loja e reimplantar. Esse ID é público; não enviar client secret ou chave privada para o Git. Não usar um ID demonstrativo da documentação.
+4. Client ID real já definido em **`GOOGLE_CLIENT_ID`** na Vercel. Se o Google apresentar erro de origem/público de teste, ajustar as permissões do cliente existente no console; não criar outro ID nem fornecer Client Secret.
 
-Depois disso ainda é obrigatório validar Google real e os fluxos em HTTPS no ambiente autorizado, incluindo a conta administrativa, indicação aprovada, resgate, cotação, reserva e confirmação da venda. O Client ID por si só não comprova funcionamento nem autoriza `REFERRALS_ENABLED=true`. A implantação desta entrega mantém a campanha fechada porque essa validação real não pôde ocorrer.
+Ainda é obrigatório concluir o login real pela página administrativa e validar os fluxos em HTTPS no ambiente autorizado, incluindo a conta administrativa, indicação aprovada, resgate, cotação, reserva e confirmação da venda. O Client ID por si só não comprova funcionamento nem autoriza `REFERRALS_ENABLED=true`. A implantação desta entrega mantém a campanha fechada porque essa validação real não pôde ocorrer.
 
 ## Validação desta entrega
 
@@ -37,6 +39,7 @@ Detalhes e comandos em [README-INDICACOES.md](README-INDICACOES.md). O relatóri
 
 ## URLs
 
+- [Verificação administrativa do Google](https://rfa-fit-loja.vercel.app/verificar-login.html)
 - [Loja](https://rfa-fit-loja.vercel.app/)
 - [Campanha — desativada](https://rfa-fit-loja.vercel.app/indicacoes.html)
 - [Administração — operações desativadas](https://rfa-fit-loja.vercel.app/admin-indicacoes.html)

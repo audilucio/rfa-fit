@@ -6,6 +6,7 @@ for (const name of [
   "config.js",
   "404.html",
   "indicacoes.html",
+  "verificar-login.html",
   "admin-indicacoes.html",
   "regulamento.html",
   "privacidade.html",
