@@ -9,7 +9,14 @@ async function panel() {
   $("registration").hidden = true;
   $("dashboard").hidden = false;
   link = location.origin + "/indicacoes.html?ref=" + encodeURIComponent(d.code);
-  $("shareLink").textContent = link;
+  const canShare = d.approved && !d.redeemed;
+  $("copy").disabled = !canShare;
+  $("share").hidden = !canShare;
+  $("shareLink").textContent = canShare
+    ? link
+    : d.redeemed
+      ? "A progressão desta campanha foi encerrada."
+      : "Seu link ficará disponível após a aprovação administrativa.";
   $("share").href =
     "https://wa.me/?text=" +
     encodeURIComponent(

@@ -94,6 +94,11 @@ async function adminPanel(page) {
 }
 try {
   const owner = await login(`browser-${suffix}@example.com`);
+  assert.equal(
+    await owner.page.locator("#copy").isDisabled(),
+    true,
+    "Unapproved participants must not share unusable referral links",
+  );
   const admin = await login("admin@gmail.com");
   await adminPanel(admin.page);
   await actionRecord(admin.page, owner.p.id, "Aprovar legitimidade");

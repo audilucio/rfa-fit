@@ -2,7 +2,7 @@
 
 O fluxo atual usa **Google Identity Services / OpenID Connect**. Não exige Resend, remetente de e-mail, SMS, domínio próprio ou client secret. Neon Free, Vercel e a loja HTML/JavaScript foram preservados. Nenhum plano pago, cartão ou faturamento foi ativado.
 
-A campanha permanece **desativada**: o OAuth Web Client ID real já foi fornecido e configurado na Vercel, mas ainda é necessário confirmar o login real e validar os fluxos autorizados antes da abertura. A presença de código e testes locais não comprova login real nem autoriza ativação. Veja [ATIVACAO-GOOGLE.md](ATIVACAO-GOOGLE.md). O relatório da etapa 2 é histórico; sua pendência Resend foi substituída.
+O Client ID real está configurado e o login Google do titular foi confirmado na auditoria do domínio definitivo. A abertura é controlada por `REFERRALS_ENABLED` e validada após a implantação; `GET /api/referral` informa o estado público efetivo. Homologação e desenvolvimento permanecem desativados por padrão. Veja [ATIVACAO-GOOGLE.md](ATIVACAO-GOOGLE.md). O relatório da etapa 2 é histórico; sua pendência Resend foi eliminada.
 
 ## Configuração existente
 
@@ -32,7 +32,7 @@ O modo implementado é popup com callback JavaScript, seguido de POST JSON no me
 
 Copiar o Client ID real para `GOOGLE_CLIENT_ID` na Vercel, nos ambientes correspondentes, e reimplantar. Não criar valor fictício para preencher o campo. Não habilitar faturamento, Firebase Identity Platform, serviços de SMS ou e-mail. Qualquer autorização/publicação do aplicativo exigida pelo console deve ser feita pelo titular, sem contornar a verificação.
 
-O Client ID real já foi fornecido pelo titular e configurado em production/preview/development. As demais variáveis estão preservadas; a flag continua false. A configuração do console Google deve permitir a origem exata indicada acima. **Não alterar a flag só por preencher o Client ID**: antes de publicar a campanha, verificar login Google real em HTTPS, administrador correto, indicações aprovadas, resgate, valores, reserva e confirmação de venda no ambiente autorizado. Esta entrega não alega essa validação real.
+O Client ID real já foi fornecido pelo titular e configurado em production/preview/development. As demais variáveis estão preservadas; a flag continua false. A configuração do console Google deve permitir a origem exata indicada acima. **Não alterar a flag só por preencher o Client ID**: a abertura exige login Google real em HTTPS e validação dos fluxos. O login administrativo foi confirmado em produção; progressão, cupons, reservas e vendas passaram nos testes locais e Neon de homologação sem criar indicações/vendas fictícias na produção.
 
 ## Verificar Google sem abrir a campanha
 
@@ -88,7 +88,7 @@ npm run test:public
 
 O PostgreSQL local dedicado é o container `rfa-fit-referral-test` na porta 55439, usuário/base `rfa_test`, senha sintética `synthetic_local_only`. Os scripts de integração recusam outras URLs. Homologação recusa qualquer projeto diferente do Neon exclusivo indicado e reverte toda a transação. Nunca rodar testes sintéticos na produção.
 
-Testes de assinatura usam chaves RSA e tokens **locais de teste**. API/default da implantação só confia nas chaves públicas Google: não existe flag/URL de JWKS nem credencial especial de teste em produção. Injeção de dependências ocorre apenas nos processos dos testes. Navegador ativo testa o SDK com fixture e API/SQL reais locais. O teste público valida loja e bloqueio da campanha, sem simular Google, cadastrar pessoas ou enviar WhatsApp. Esses testes não comprovam login Google real.
+Testes de assinatura usam chaves RSA e tokens **locais de teste**. API/default da implantação só confia nas chaves públicas Google: não existe flag/URL de JWKS nem credencial especial de teste em produção. Injeção de dependências ocorre apenas nos processos dos testes. Navegador ativo testa o SDK com fixture e API/SQL reais locais. O teste público padrão verifica a campanha fechada; `npm run test:public -- --active` verifica a campanha aberta, preços e cotação no servidor e proteção de acesso administrativo. Nenhum dos dois simula login Google ou cria pedidos/participantes. Esses testes não comprovam login Google real.
 
 `public/` contém apenas a lista explícita de arquivos estáticos: backend, testes, documentação operacional, credenciais e backups ficam de fora. Backups desta alteração estão em `.vercel/backup-google/`, ignorados no Git e na publicação.
 

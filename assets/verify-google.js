@@ -8,6 +8,11 @@ async function verified() {
     throw Error("Não foi possível confirmar o acesso administrativo.");
   $("registration").hidden = true;
   $("verified").hidden = false;
+  const message = $("campaignState");
+  if (message)
+    message.textContent = s.campaignEnabled
+      ? "Autenticação administrativa confirmada. A campanha está disponível; cadastros e vendas continuam sujeitos à revisão administrativa."
+      : "Autenticação administrativa confirmada. A campanha continua desativada.";
   status(
     s.campaignEnabled
       ? "Autenticação administrativa confirmada."
