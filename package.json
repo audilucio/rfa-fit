@@ -16,6 +16,7 @@
     "test:public": "node scripts/public-smoke.js"
   },
   "dependencies": {
+    "jose": "^6.2.13",
     "pg": "^8.16.3"
   },
   "devDependencies": {

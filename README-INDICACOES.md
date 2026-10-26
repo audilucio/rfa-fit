@@ -1,86 +1,89 @@
 # RFA.FIT — Indique & Ganhe
 
-Campanha **desativada**. Na etapa 2 foram provisionados dois bancos Neon Free exclusivos (produção e homologação), aplicada a migração e configuradas as variáveis disponíveis no projeto Vercel `rfa-fit-loja`. As conexões tiveram certificado e TLS 1.3 validados. Falta conectar o Resend com um domínio remetente próprio verificável e validar entrega real de e-mail antes da ativação. A loja estática e `data/products.json` foram preservados. Veja o [relatório da etapa 2](ATIVACAO-ETAPA-2.md).
+O fluxo atual usa **Google Identity Services / OpenID Connect**. Não exige Resend, remetente de e-mail, SMS, domínio próprio ou client secret. Neon Free, Vercel e a loja HTML/JavaScript foram preservados. Nenhum plano pago, cartão ou faturamento foi ativado.
 
-## Arquivos e arquitetura
+A campanha permanece **desativada**: ainda falta criar/autorizar o OAuth Web Client ID da RFA.FIT no console Google e validar autenticação real. A presença de código e testes locais não comprova login real nem autoriza ativação. Veja [ATIVACAO-GOOGLE.md](ATIVACAO-GOOGLE.md). O relatório da etapa 2 é histórico; sua pendência Resend foi substituída.
 
-- `index.html`: seção da campanha e sacola; checkout legado preservado quando desativada.
-- `scripts/build.js`: gera `public/` com lista explícita de arquivos públicos; backend, testes, documentação operacional e backups ficam fora da publicação estática. APIs são empacotadas separadamente como Vercel Functions.
-- `assets/*referrals*`: interface responsiva, participante, sacola e administração.
-- `indicacoes.html`, `admin-indicacoes.html`, `regulamento.html`, `privacidade.html`: páginas do programa.
-- `api/referral.js`: função Node.js 24 para Vercel, mesma origem, limite de corpo, cookie HttpOnly/SameSite e envio transacional via Resend.
-- `lib/domain.js`: catálogo autoritativo, centavos, níveis, deduplicação e mensagem WhatsApp.
-- `lib/service.js`: regras, aprovação humana, cupons, reservas, venda e exclusão.
-- `lib/db.js`, `migrations/001_referrals.sql`: PostgreSQL persistente; transação no mesmo cliente e advisory lock global de campanha. Adequado a baixo volume, serializa mutações e evita resgates/reservas concorrentes. Monitorar contenção antes de escalar.
-- `tests/` e `scripts/`: testes e servidor local. Não há autenticação especial de desenvolvimento em produção.
+## Configuração existente
 
-## Preparação externa e ativação
+Produção: Neon `rfa-fit-indicacoes`, projeto `broad-haze-49504623`, conectado apenas a production do projeto Vercel `rfa-fit-loja`. Homologação: `rfa-fit-indicacoes-preview`, projeto `orange-glade-30690745`, conectado apenas a preview/development. Ambos Free e exclusivos da RFA.FIT; TLS com validação de certificado. Outros projetos não foram alterados.
 
-1. Provisionar PostgreSQL com TLS e pool de conexões compatível com serverless (por exemplo, plano gratuito de Neon ou Supabase, sujeito aos limites do fornecedor). Não foi criada conta nem contratado plano. Usar projeto exclusivo, backups e acesso mínimo; nunca expor conexão no HTML ou `config.js`.
-2. Configurar Resend e validar domínio remetente (DNS). O código envia apenas e-mail de acesso/confirmação, sem campanhas comerciais. Não usar domínio de teste para clientes reais.
-3. As variáveis de banco, chave de identidade, origem, administrador e flag desativada já estão configuradas na Vercel. Completar `RESEND_API_KEY` e `EMAIL_FROM`, sem placeholders, conforme `.env.example`. `IDENTITY_SECRET` deve ser aleatório, de pelo menos 32 caracteres (recomendado 32 bytes aleatórios em hex). Manter estável: a troca invalida identidade pseudonimizada, sessões e tokens; exige plano de migração. `ADMIN_EMAILS` contém e-mails completos autorizados, separados por vírgula. Administradores usam o mesmo acesso por e-mail, sem senha compartilhada.
-4. Aplicar a migração com `DATABASE_URL` e, em produção, verificação TLS. `npm run db:migrate`. Migração transacional e idempotente; não apaga dados. Preferir credencial de migração separada da credencial de runtime, com permissão apenas nas tabelas necessárias.
-5. Revisar dados do controlador, política, legitimidade/interesse legítimo, contratos de operadores, transferência internacional, prazo da campanha e procedimento de retenção com o responsável pela loja. Textos fornecem o fluxo implementado; não substituem definição dessas responsabilidades pelo controlador.
-6. Testar primeiro em implantação de preview isolada, com banco próprio: cadastrar endereços reais controlados, receber e-mail de verdade, verificar expiração e uso único, acessar como admin, aprovar participante e três indicadas distintas, resgatar, validar sacola e WhatsApp, cancelar/expirar reserva e confirmar uma venda sintética. Conferir cookie Secure sobre HTTPS, restrições de origem e acesso anônimo negado.
-7. Somente depois, repetir o smoke test no domínio definitivo e configurar `REFERRALS_ENABLED=true` com todas as outras variáveis válidas. Implantar novamente. Conferir `/api/referral` e interface; nunca anunciar campanha ativa sem esse teste real. Para interromper novos acessos, usar `REFERRALS_ENABLED=false` e reimplantar, cuidando dos pedidos pendentes já recebidos.
+Variáveis usadas pelo runtime:
 
-O endpoint GET informa somente `enabled`. Sem configuração completa, cadastro, cupons e checkout do programa respondem 503; banner e campo de cupom ficam ocultos. `/indicacoes.html` informa indisponibilidade. A loja e o checkout original continuam disponíveis. Segredos não devem ter prefixo público nem entrar no repositório. `PGSSL=disable` é exclusivamente local; produção valida certificado.
+| Variável            | Uso                                                                                                                          |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`      | Conexão PostgreSQL persistente com pooler e TLS                                                                              |
+| `IDENTITY_SECRET`   | Chave aleatória com pelo menos 32 caracteres; HMAC de identidades, sessões e desafios. Não rotacionar sem migração planejada |
+| `GOOGLE_CLIENT_ID`  | **Nova**, pública: OAuth Client ID do tipo Web, terminando em `.apps.googleusercontent.com`                                  |
+| `APP_ORIGIN`        | Origem HTTPS exata, sem barra final. Produção: `https://rfa-fit-loja.vercel.app`                                             |
+| `ADMIN_EMAILS`      | E-mails autorizados para bootstrap administrativo; privilégio fixado ao `sub` após primeiro login confiável                  |
+| `REFERRALS_ENABLED` | `false` até autenticação real e fluxos de ponta a ponta validados                                                            |
+| `PGSSL`             | Opcional, `disable` aceito apenas em loopback para testes locais                                                             |
 
-## Operação e regras
+`RESEND_API_KEY` e `EMAIL_FROM` não são lidas nem exigidas. Não há envio de confirmação por e-mail. Google Client ID não é segredo; nenhum Google Client Secret, refresh token ou chave privada Google é necessário neste fluxo de ID token.
 
-- Primeiro cadastro fixa o indicador para sempre; pessoa já cadastrada não passa a ser “nova” por outro link. Não há importação de contatos de terceiros. Compartilhamento é voluntário por link, WhatsApp e copiar/colar em outras redes.
-- E-mail é normalizado e aliases com `+` são agrupados; Gmail/Googlemail também agrupam pontos. Essa deduplicação é conservadora, pode exigir revisão e não identifica toda pessoa com múltiplos e-mails. Não coletamos CPF, telefone de amigas nem impressão digital do dispositivo.
-- Confirmação de contato não equivale à aprovação de legitimidade. Administrador revisa cada cadastro confirmado em `/admin-indicacoes.html`, acessando primeiro `/indicacoes.html` com e-mail autorizado. O primeiro admin pode acessar sem aprovação prévia. Aprovação/bloqueio exigem motivo auditável. Não aprovar em massa sem revisão. O painel mostra os 200 registros mais recentes por categoria; histórico completo permanece no banco e pode ser consultado com acesso operacional autorizado.
-- Apenas confirmadas, aprovadas e não bloqueadas/excluídas contam. Indicador precisa estar aprovado para compartilhar link aceito e para resgatar. 3/6/9 = 10/20/30%; contador de desconto limitado a 9. Há um único cupom por participante, garantido por restrição UNIQUE e transação. Resgate encerra progressão, mesmo se cupom expirar sem uso. Não são criados benefícios adicionais.
-- Cupons são aleatórios, individuais, não acumuláveis, válidos por 30 dias desde a emissão e vinculados à sessão do titular. Podem ser digitados na sacola após login pelo e-mail. O cliente não escolhe percentual. Indicações revogadas podem suspender cupom ainda não utilizado.
-- Preço vigente, cor, tamanho e quantidades vêm do catálogo no servidor. Quantidades inteiras de 1 a 20 por linha, até 50 peças por pedido e 30 linhas. `referralEligible:false` exclui um produto; por padrão são elegíveis produtos cujo nome começa com “Biquíni”. Produtos inativos são recusados. Preço riscado e valores enviados pelo navegador são ignorados. Desconto arredondado uma vez sobre subtotal elegível em centavos; frete fica fora do benefício.
-- Sacola, compra imediata e mensagem do pedido usam a mesma cotação do servidor quando a campanha está habilitada. Nenhum benefício é armazenado em localStorage. Sessão via cookie HttpOnly, sete dias; link de acesso, 15 minutos e uso único, token armazenado somente como HMAC. Token fica no fragmento e é removido da URL ao abrir a página; não entra no referer nem em logs HTTP.
-- Checkout cria pedido `pending` por 30 minutos. Mesmo cupom e mesmos itens recuperam a reserva existente; itens diferentes exigem cancelar/expirar a anterior. Abrir WhatsApp não confirma venda. Participante pode cancelar reserva em seu painel; admin também pode cancelar. Expiração é recuperada de forma preguiçosa nas próximas operações, sem cron obrigatório.
-- Atendimento deve conferir identificador, itens e valores no painel, confirmar pagamento e identidade do titular, registrar motivo e marcar a confirmação de titularidade. Só então clicar em “Confirmar venda”. O texto do WhatsApp é editável pelo usuário: nunca tratá-lo como fonte financeira autoritativa. O pedido salvo no servidor é a referência. Reservas vencidas não são confirmadas; emitir novo pedido se cupom ainda valer. Uma venda confirmada é terminal; reembolso exige processo comercial separado e não libera outro benefício automaticamente.
-- Limites persistentes: 120 requisições/hora por HMAC de IP e 5 solicitações de e-mail/hora por identidade normalizada, honeypot, aprovação humana, deduplicação e auditoria. Não há promessa de eliminar toda fraude. Eventos de mudança e motivos ficam registrados sem tokens, IP bruto ou e-mail nos logs. Evitar dados pessoais nos motivos.
+A integração Neon também fornece variáveis próprias como `DATABASE_URL_UNPOOLED` e `NEON_PROJECT_ID`. A primeira foi usada nas migrações; a segunda protege o teste de homologação contra execução no banco errado. Credenciais não entram no Git nem no build público. `.env.preview.local` é ignorado e tem permissão 0600, contendo somente homologação.
 
-## Exclusão e retenção
+## Única configuração externa de autenticação
 
-Participante solicita exclusão autenticado, ou pelo atendimento oficial. Admin analisa pedidos em `deletion_requests`, cancela reservas pendentes e executa “Remover contato e revogar acesso”. O sistema remove e-mail, tokens e sessões, bloqueia a conta e mantém HMAC residual de contato para impedir novo benefício com os mesmos dados. **Esse HMAC é pseudonimização, não anonimização jurídica.** Pedidos e auditoria mínimos permanecem para obrigações aplicáveis e defesa de direitos.
+No [Google Auth Platform](https://console.cloud.google.com/auth/clients), usando uma conta autorizada do responsável, criar um cliente OAuth do tipo **Web application**, exclusivo da RFA.FIT. Configurar nome, público/usuários de teste e URLs de privacidade/regulamento da loja. Cadastrar como origem JavaScript autorizada **`https://rfa-fit-loja.vercel.app`**, sem caminho nem barra final. A origem atual da Vercel é usada; o código não depende de registrar domínio nem de verificar DNS para e-mail.
 
-O responsável deve revisar periodicamente retenção e direitos, responder solicitações, avaliar necessidade/base de dados residuais e remover o que não tiver justificativa ao fim da campanha. A implementação não faz apagamento destrutivo automático nem elimina dados fiscais. Tokens/sessões expirados e limites antigos são limpos nas operações. Não publicar uma política com prazos e operadores incompatíveis com a operação real.
+O modo implementado é popup com callback JavaScript, seguido de POST JSON no mesmo domínio. Não há troca de authorization code nem redirect URI de servidor a cadastrar. Para testar Google real em localhost ou preview, adicionar suas origens exatas ao cliente correspondente e ajustar `APP_ORIGIN`. Não usar curingas nem credenciais de outro projeto. Preferir cliente separado para homologação; isso não é necessário para executar os testes sintéticos locais.
 
-## Desenvolvimento e testes
+Copiar o Client ID real para `GOOGLE_CLIENT_ID` na Vercel, nos ambientes correspondentes, e reimplantar. Não criar valor fictício para preencher o campo. Não habilitar faturamento, Firebase Identity Platform, serviços de SMS ou e-mail. Qualquer autorização/publicação do aplicativo exigida pelo console deve ser feita pelo titular, sem contornar a verificação.
 
-Conexões com `sslmode` injetado por integrações são normalizadas em `lib/db-config.js` para preservar a validação de certificado. `PGSSL=disable` é rejeitado fora de loopback. Não usar `POSTGRES_URL_NO_SSL` fornecida automaticamente pelo provedor.
+Esse passo ainda não foi executado: não foi encontrado Client ID RFA.FIT nem autenticação gcloud disponível. As demais variáveis já estão configuradas; a flag continua false. **Não alterar a flag só por preencher o Client ID**: antes de publicar a campanha, verificar login Google real em HTTPS, administrador correto, indicações aprovadas, resgate, valores, reserva e confirmação de venda no ambiente autorizado. Esta entrega não alega essa validação real.
 
-Node.js 24. `npm ci`, `npm run dev`, abrir `http://127.0.0.1:3000`. Variáveis podem ser carregadas com `node --env-file=.env scripts/dev.js` (e analogamente migração). Não disponibilizar esse servidor local na internet.
+## Autenticação, identidade e segurança
+
+- `api/referral.js` só aceita POST JSON da origem exata. O navegador recebe nonce aleatório e cookie HttpOnly de desafio, por cinco minutos. O POST de login exige cookie e token CSRF iguais, a assinatura Google válida e o nonce assinado correspondente ao registro persistente. O desafio é consumido atomicamente; duas tentativas simultâneas não geram duas sessões/cadastros pelo mesmo desafio.
+- `lib/google-auth.js` usa `jose` e JWKS no endereço fixo `https://www.googleapis.com/oauth2/v3/certs`, com cache/rotação e timeout. Valida RS256, assinatura, `iss`, `aud`, `azp` quando presente, `exp`, `iat`, `sub`, nonce e `email_verified === true`. Não aceita JWKS, issuer, audience ou chaves privadas enviados pelo navegador. Falhas retornam mensagem genérica sem token.
+- O identificador da conta é HMAC de **`sub`**, persistido com índice único. Mudança de e-mail não cria outro participante nem reabre progressão. Histórico de identidades de contato impede reutilização de e-mails/aliases já vinculados. Não há associação automática de registro legado a uma nova conta Google apenas por e-mail igual; eventuais casos antigos exigem revisão segura pelo atendimento.
+- Gmail/Googlemail com pontos e aliases `+` são deduplicados, e `+` também é agrupado conservadoramente nos outros domínios. A regra pode exigir revisão. Login Google e e-mail verificado não provam que contas distintas sejam pessoas distintas; aprovação humana continua obrigatória. Para contas com endereço externo ao Gmail/Workspace, o e-mail pode representar uma verificação histórica do Google; não é prova suficiente para privilégios administrativos.
+- Bootstrap de admin exige e-mail autorizado para o qual Google seja autoridade (Gmail ou Workspace com `hd`). Depois, o slot administrativo fica vinculado ao `sub`. Outra conta não herda privilégios pela reutilização do endereço. Remover o e-mail da lista de configuração revoga o slot. O titular Vercel atualmente configurado usa Gmail.
+- Sessão aleatória própria, armazenada só como HMAC no servidor; cookie host-only, HttpOnly, SameSite=Strict, Secure em HTTPS e prazo de sete dias. Logout revoga a sessão e desliga seleção automática do Google no navegador. ID tokens nunca são armazenados no localStorage, banco ou logs. Não pedimos senha Google, acesso a Gmail, contatos, agenda ou pagamentos. Nome e foto presentes no token não são persistidos.
+- Google SDK é carregado só depois do aceite e da escolha “Continuar com Google”. O botão é oficial. Sem campanha/configuração válida, não é carregado. COOP e Referrer-Policy da página são compatíveis com o popup Google.
+- Rate limiting persistente: 120 requisições/hora por HMAC de IP e 40 operações de desafio/login Google por hora/IP (um login normal usa duas). Há honeypot, auditoria e revisão administrativa; não há promessa de eliminar toda fraude.
+- PostgreSQL: transações no mesmo cliente e advisory lock da campanha; restrições únicas contra duplicidades. `lib/db-config.js` impede que parâmetros SSL da URL substituam a validação do certificado. Desativar TLS é proibido fora de loopback.
+
+## Regras preservadas
+
+Primeiro cadastro fixa o indicador. Cada nova pessoa só beneficia um indicador; ninguém fornece contatos de terceiros. Clique e login sem aprovação não contam. Cadastro com Google validado, aprovado e não bloqueado/excluído conta. Autoconvite e reaproveitamento de conta/contato são recusados; quem já é participante não se torna indicação nova ao receber outro link.
+
+3/6/9 indicações liberam 10/20/30%; contabilização limitada a nove e percentual limitado a 30%. Um único resgate por participante. Resgatar em três ou seis encerra a progressão; expiração ou cancelamento de pedido não cria outro benefício. O cupom é individual, intransferível, de uso único, válido por 30 dias e não cumulativo. Bloqueio/revogação de indicações pode suspender benefício ainda não utilizado.
+
+Servidor valida produto ativo, variante, tamanho e quantidade inteira: 1–20 por linha, até 50 peças/30 linhas. Preços vêm de `data/products.json`: cinco biquínis a R$ 99,90, preservados. Desconto aplica-se ao preço vigente, nunca ao riscado, sobre subtotal elegível em centavos. `referralEligible:false` exclui um produto; por padrão são elegíveis os nomes iniciados por “Biquíni”. Frete fica fora do benefício. Duas unidades: R$ 199,80; desconto 30%: R$ 59,94; total R$ 139,86.
+
+Sacola e compra imediata usam cotação e mensagem do servidor quando habilitadas. Abrir WhatsApp só cria reserva `pending`, por 30 minutos. Mesmo cupom/itens recuperam a reserva existente. Cancelamento/expiração libera reserva sem estender os 30 dias do cupom. Participante e admin podem cancelar; expiração é recuperada nas operações seguintes. Somente confirmação administrativa, após conferir pagamento e titularidade, consome definitivamente o cupom. Pedido expirado não é confirmado.
+
+O texto do WhatsApp é editável pelo cliente: atendimento deve conferir o identificador e os valores no painel, fonte autoritativa do pedido. Venda confirmada é terminal; reembolso exige procedimento comercial separado e não libera benefício automaticamente. O checkout legado continua funcionando com a campanha desativada.
+
+## Migrações e privacidade
+
+`npm run db:migrate` executa as migrações ordenadas em uma transação, com lock e histórico `rfa_migrations`. `001_referrals.sql` preserva a base existente; `002_google_identity.sql` acrescenta vínculo Google, histórico de contatos, desafios e bindings administrativos. Preserva participantes, referências, cupons, pedidos e auditoria. Expira credenciais de e-mail antigas apenas na primeira aplicação, impedindo acesso legado após a troca. Reexecutar não expira novas sessões Google.
+
+Solicitação de exclusão segue no painel ou no atendimento. O admin remove contato e revoga acessos após tratar reservas pendentes; permanecem somente identificadores e registros necessários para evitar reutilização indevida, obrigações aplicáveis e defesa de direitos. HMACs de sub/contatos são **pseudonimização, não anonimização**. O controlador deve revisar retenção e os direitos previstos na política; nenhum apagamento destrutivo de dados reais é feito automaticamente. Tokens antigos expirados, sessões e desafios vencidos são limpos nas operações.
+
+## Testes e execução
+
+Node.js 24; `npm ci`; `npm run dev` em loopback. Não publicar o servidor de desenvolvimento. Variáveis locais podem ser carregadas com `node --env-file=.env scripts/dev.js`.
 
 ```sh
 npm test
 npm run check
 npm run build
 npm audit
-npx playwright install chromium
 npm run test:browser
-```
-
-`npm test` usa PostgreSQL embarcado PGlite, sem serviços externos. Cobre 0/1/2/3/6/9/10, duplicidade, aliases, código inválido, autoconvite, confirmação e expiração, níveis, resgate único, reservas, cálculos, fraude e exclusão. Teste de concorrência adicional usa PostgreSQL real e o lock exato de produção:
-
-```sh
-docker run -d --name rfa-fit-referral-test -e POSTGRES_USER=rfa_test -e POSTGRES_PASSWORD=synthetic_local_only -e POSTGRES_DB=rfa_test -p 127.0.0.1:55439:5432 postgres:16
 DATABASE_URL=postgresql://rfa_test:synthetic_local_only@127.0.0.1:55439/rfa_test npm run test:integration
+DATABASE_URL=postgresql://rfa_test:synthetic_local_only@127.0.0.1:55439/rfa_test npm run test:browser:real
+node --env-file=.env.preview.local scripts/staging-smoke.js
+npm run test:public
 ```
 
-O teste recusa outra URL; usa só dados sintéticos. E-mail transacional é simulado e não confirma entrega real do Resend. Navegador testa 360/390/768/1440 px, loja desativada e checkout legado; fluxo visual ativo usa fixtures de API. API real testa sessão, proteção de origem, admin negado, reserva e resgate concorrentes, totais e rate limiting. O fluxo móvel também foi testado contra API e PostgreSQL reais com `DATABASE_URL=postgresql://rfa_test:synthetic_local_only@127.0.0.1:55439/rfa_test npm run test:browser:real`: token, cookie, painel, resgate, aplicação de cupom, totais, link WhatsApp idêntico à mensagem do servidor e cancelamento de reserva, sem mocks de API. O teste móvel também exercita a aprovação de cadastro no painel e a confirmação administrativa de uma venda sintética, recusando reutilização do cupom. Isso não substitui smoke test HTTPS, e-mail entregue e WhatsApp efetivamente recebido em produção.
+O PostgreSQL local dedicado é o container `rfa-fit-referral-test` na porta 55439, usuário/base `rfa_test`, senha sintética `synthetic_local_only`. Os scripts de integração recusam outras URLs. Homologação recusa qualquer projeto diferente do Neon exclusivo indicado e reverte toda a transação. Nunca rodar testes sintéticos na produção.
 
-## Publicação, backup e referências
+Testes de assinatura usam chaves RSA e tokens **locais de teste**. API/default da implantação só confia nas chaves públicas Google: não existe flag/URL de JWKS nem credencial especial de teste em produção. Injeção de dependências ocorre apenas nos processos dos testes. Navegador ativo testa o SDK com fixture e API/SQL reais locais. O teste público valida loja e bloqueio da campanha, sem simular Google, cadastrar pessoas ou enviar WhatsApp. Esses testes não comprovam login Google real.
 
-Backup inicial de `index.html`, `config.js` e catálogo em `/tmp/rfa-fit-backup-20261023/`, fora do Git; backups preexistentes `.bkp` também ignorados e preservados. `/tmp` é temporário, não substitui backup operacional permanente.
+`public/` contém apenas a lista explícita de arquivos estáticos: backend, testes, documentação operacional, credenciais e backups ficam de fora. Backups desta alteração estão em `.vercel/backup-google/`, ignorados no Git e na publicação.
 
-O push para `origin/main` permite implantação automática se a integração Git/Vercel já existir. Validar o status externo; não presumir deploy bem-sucedido só por push. Rota prevista: `https://rfa-fit-loja.vercel.app/indicacoes.html`; permanece indisponível até configuração e validação reais.
-
-Referências primárias consultadas: [Vercel Node.js](https://vercel.com/docs/functions/runtimes/node-js), [transações node-postgres](https://node-postgres.com/features/transactions), [Resend](https://resend.com/docs/api-reference/emails/send-email), [LGPD, arts. 16 e 18](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709compilado.htm).
-
-## Verificações da etapa 2
-
-`npm run test:public` verifica a loja publicada em celular e desktop, o preço de R$ 99,90, o checkout legado, as rotas internas protegidas e o bloqueio da campanha. Requer a campanha desativada e não cria cadastros nem envia mensagens.
-
-`node --env-file=.env.preview.local scripts/staging-smoke.js` verifica o PostgreSQL Neon real pelo pooler, incluindo 0/1/2/3/6/9/10, resgate, reservas, confirmação administrativa e limites. Recusa qualquer projeto diferente do Neon exclusivo de homologação e reverte toda a transação ao terminar. Não usar credenciais de produção nesse teste. `.env.preview.local` é ignorado no Git, tem modo 0600 e contém somente credenciais de homologação; não é publicado.
-
-O teste no Neon exercita a camada de regras diretamente, sem afirmar entrega de e-mail. O teste de navegador ativo usa API e PostgreSQL locais isolados. A produção foi verificada com a campanha desativada.
+Referências oficiais: [configuração GIS](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid), [verificação de ID token](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token), [API JavaScript e nonce](https://developers.google.com/identity/gsi/web/reference/js-reference), [jose](https://github.com/panva/jose), [TLS PostgreSQL](https://node-postgres.com/features/ssl).

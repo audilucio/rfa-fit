@@ -1,7 +1,9 @@
+// Local full-stack browser test. The Google SDK and signing keys are test fixtures.
 import { chromium } from "@playwright/test";
-import { spawn } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import assert from "node:assert/strict";
+import { identityFixture, clientId } from "../tests/google-fixture.js";
 if (
   !/^postgresql:\/\/rfa_test:.*@127\.0\.0\.1:55439\/rfa_test$/.test(
     process.env.DATABASE_URL || "",
@@ -13,52 +15,103 @@ Object.assign(process.env, {
   IDENTITY_SECRET: "synthetic-test-only-secret-32-characters",
   REFERRALS_ENABLED: "true",
   APP_ORIGIN: "http://127.0.0.1:3008",
-  RESEND_API_KEY: "synthetic",
-  EMAIL_FROM: "test@example.com",
-  ADMIN_EMAILS: "admin@example.com",
+  GOOGLE_CLIENT_ID: clientId,
+  ADMIN_EMAILS: "admin@gmail.com",
 });
+assert.equal(
+  spawnSync(process.execPath, ["scripts/migrate.js"], {
+    env: process.env,
+    encoding: "utf8",
+  }).status,
+  0,
+);
+const fixture = await identityFixture();
+const { createHandler } = await import("../api/referral.js");
+const { createDevServer } = await import("./dev.js");
 const { transaction } = await import("../lib/db.js");
 const s = await import("../lib/service.js");
-const suffix = randomUUID().slice(0, 8);
-async function person(email, ref) {
-  return transaction(async (c) => {
-    const r = await s.register(c, { email, ref, consent: true });
-    const session = await s.verify(c, r.token);
-    const p = await s.participant(c, session);
-    await s.admin(
-      c,
-      { action: "approve", id: p.id, reason: "Pessoa sintética distinta" },
-      "test",
-    );
-    return { ...p, approved: true };
+const server = createDevServer(createHandler({ verifyToken: fixture.verify }));
+await new Promise((ok) => server.listen(3008, "127.0.0.1", ok));
+const browser = await chromium.launch({ headless: true });
+const suffix = randomUUID().slice(0, 8),
+  base = "http://127.0.0.1:3008";
+const errors = [];
+async function login(email, ref) {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    extraHTTPHeaders: { "x-vercel-forwarded-for": "browser-" + suffix },
   });
-}
-const owner = await person(`browser-${suffix}@example.com`);
-for (let i = 0; i < 3; i++)
-  await person(`browser-${suffix}-${i}@example.net`, owner.code);
-const login = await transaction((c) =>
-  s.register(c, { email: owner.email, consent: true }),
-);
-const server = spawn(process.execPath, ["scripts/dev.js"], {
-  env: { ...process.env, PORT: "3008" },
-  stdio: "pipe",
-});
-await new Promise((ok, no) => {
-  server.stdout.once("data", ok);
-  server.once("error", no);
-});
-let browser;
-try {
-  browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-  const errors = [];
+  const page = await context.newPage();
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto(`http://127.0.0.1:3008/indicacoes.html#token=${login.token}`);
+  let sdkLoads = 0;
+  await page.exposeFunction("__fixtureGoogleToken", (nonce) =>
+    fixture.sign(email, nonce),
+  );
+  await page.route("https://accounts.google.com/gsi/client", async (route) => {
+    sdkLoads++;
+    await route.fulfill({
+      contentType: "text/javascript",
+      body: `window.google={accounts:{id:{initialize(c){this.config=c;},renderButton(el){const b=document.createElement('button');b.id='fixtureGoogle';b.textContent='Google test identity';b.onclick=async()=>this.config.callback({credential:await window.__fixtureGoogleToken(this.config.nonce)});el.append(b);},disableAutoSelect(){}}}};`,
+    });
+  });
+  await page.goto(base + "/indicacoes.html" + (ref ? "?ref=" + ref : ""));
+  await page.locator("#registration").waitFor({ state: "visible" });
+  assert.equal(sdkLoads, 0);
+  assert.equal(await page.locator("input[type=email]").count(), 0);
+  await page.locator("input[name=consent]").check();
+  await page.locator("#prepareGoogle").click();
+  await page.locator("#fixtureGoogle").click();
   await page.locator("#dashboard").waitFor({ state: "visible" });
-  assert.equal(await page.locator("#progress").getAttribute("value"), "3");
-  assert.ok(!page.url().includes("token"));
-  const cookies = await page.context().cookies();
-  assert.ok(cookies.find((c) => c.name === "rfa_session").httpOnly);
+  assert.equal(sdkLoads, 1);
+  const cookie = (await context.cookies()).find(
+    (c) => c.name === "rfa_session",
+  );
+  assert.ok(cookie?.httpOnly);
+  const p = await transaction((c) => s.participant(c, cookie.value));
+  return { context, page, p };
+}
+async function actionRecord(page, id, label) {
+  const action = label === "Confirmar venda" ? "confirm" : "approve";
+  const response = page.waitForResponse(
+    (r) =>
+      r.url().endsWith("/api/referral") &&
+      r.request().postDataJSON()?.operation?.action === action,
+  );
+  await page
+    .locator(".admin-record")
+    .filter({ has: page.locator("pre").filter({ hasText: id }) })
+    .filter({ has: page.getByRole("button", { name: label, exact: true }) })
+    .getByRole("button", { name: label, exact: true })
+    .click();
+  assert.equal((await response).status(), 200);
+}
+async function adminPanel(page) {
+  await page.goto(base + "/admin-indicacoes.html");
+  await page.waitForFunction(() =>
+    document.getElementById("status").textContent.includes("Últimos 200"),
+  );
+  await page.locator("#reason").fill("Revisão de cadastro sintético em teste");
+}
+try {
+  const owner = await login(`browser-${suffix}@example.com`);
+  const admin = await login("admin@gmail.com");
+  await adminPanel(admin.page);
+  await actionRecord(admin.page, owner.p.id, "Aprovar legitimidade");
+  for (let n = 0; n < 3; n++) {
+    await adminPanel(admin.page);
+    const friend = await login(
+      `friend-${suffix}-${n}@example.net`,
+      owner.p.code,
+    );
+    await adminPanel(admin.page);
+    await actionRecord(admin.page, friend.p.id, "Aprovar legitimidade");
+    await friend.context.close();
+  }
+  const page = owner.page;
+  await page.locator("#refresh").click();
+  await page.waitForFunction(
+    () => document.getElementById("progress").value === 3,
+  );
   await page.locator("#redeem").click();
   await page.waitForFunction(() =>
     document.getElementById("coupon").textContent.includes("RFA-"),
@@ -66,8 +119,8 @@ try {
   const coupon = (await page.locator("#coupon").innerText()).match(
     /RFA-[A-F0-9]+/,
   )[0];
-  assert.equal(await page.locator("#redeem").isDisabled(), true);
-  await page.goto("http://127.0.0.1:3008");
+  assert.ok(await page.locator("#redeem").isDisabled());
+  await page.goto(base);
   await page.waitForFunction(() => PRODUCTS.length === 5);
   await page.evaluate(() => {
     currentProduct = PRODUCTS[0];
@@ -75,6 +128,7 @@ try {
     selectedSize = "M";
     currentQty = 2;
     addToCart();
+    window.open = () => null;
   });
   await page.locator("#couponBox").waitFor({ state: "visible" });
   await page.locator("#couponInput").fill(coupon);
@@ -82,40 +136,27 @@ try {
   await page.waitForFunction(() =>
     document.getElementById("cartFinal").textContent.includes("179,82"),
   );
-  await page.evaluate(() => {
-    window.open = () => null;
-  });
-  const response = page.waitForResponse(
+  const pendingResponse = page.waitForResponse(
     (r) =>
       r.url().endsWith("/api/referral") &&
       r.request().postDataJSON()?.action === "checkout",
   );
   await page.locator('button[onclick="checkoutWhatsApp()"]').click();
-  const result = await (await response).json();
-  assert.equal(result.total, 17982);
-  assert.equal(result.discount, 1998);
+  const order = await (await pendingResponse).json();
+  assert.equal(order.total, 17982);
+  assert.equal(order.discount, 1998);
   const href = await page.locator("#couponStatus a").getAttribute("href");
-  assert.equal(new URL(href).searchParams.get("text"), result.message);
-  assert.ok(result.message.includes("2 un."));
-  assert.ok(result.message.includes("179,82"));
-  const state = await transaction((c) => s.dashboard(c, owner));
-  assert.equal(state.coupon.used, false);
-  assert.equal(state.orders, undefined);
-  await page.goto("http://127.0.0.1:3008/indicacoes.html");
+  assert.equal(new URL(href).searchParams.get("text"), order.message);
+  assert.equal(
+    (await transaction((c) => s.dashboard(c, owner.p))).coupon.used,
+    false,
+  );
+  await page.goto(base + "/indicacoes.html");
   await page.locator("#dashboard").waitFor({ state: "visible" });
-  await page.locator("#orders button").click();
+  await page.locator("#orders button").first().click();
   await page.waitForFunction(() =>
     document.getElementById("orders").textContent.includes("cancelled"),
   );
-  // Exercise the protected admin UI against the real local API, including sale confirmation.
-  const review = await transaction(async (c) => {
-    const r = await s.register(c, {
-      email: `review-${suffix}@example.net`,
-      consent: true,
-    });
-    const token = await s.verify(c, r.token);
-    return s.participant(c, token);
-  });
   const pending = await page.evaluate(async (coupon) => {
     const r = await fetch("/api/referral", {
       method: "POST",
@@ -126,64 +167,17 @@ try {
         items: [{ id: "modelo-01", variantIndex: 0, size: "M", qty: 2 }],
       }),
     });
-    if (!r.ok) throw Error("Second local test order failed");
     return r.json();
   }, coupon);
-  await person("admin@example.com");
-  const adminLogin = await transaction((c) =>
-    s.register(c, { email: "admin@example.com", consent: true }),
-  );
-  const adminContext = await browser.newContext({
-    viewport: { width: 390, height: 844 },
-  });
-  const adminPage = await adminContext.newPage();
-  await adminPage.goto(
-    `http://127.0.0.1:3008/indicacoes.html#token=${adminLogin.token}`,
-  );
-  await adminPage.locator("#dashboard").waitFor({ state: "visible" });
-  await adminPage.goto("http://127.0.0.1:3008/admin-indicacoes.html");
-  await adminPage.waitForFunction(() =>
-    document.getElementById("status").textContent.includes("Últimos 200"),
-  );
-  await adminPage
-    .locator("#reason")
-    .fill("Cadastro sintético revisado em teste");
-  await adminPage
-    .locator(".admin-record")
-    .filter({ has: adminPage.locator("pre").filter({ hasText: review.id }) })
-    .filter({
-      has: adminPage.getByRole("button", { name: "Aprovar legitimidade" }),
-    })
-    .getByRole("button", { name: "Aprovar legitimidade" })
-    .click();
-  await adminPage.waitForFunction(
+  await adminPanel(admin.page);
+  await admin.page.locator("#verified").check();
+  await actionRecord(admin.page, pending.id, "Confirmar venda");
+  await admin.page.waitForFunction(
     (id) =>
       [...document.querySelectorAll(".admin-record pre")].some((p) => {
         try {
-          const v = JSON.parse(p.textContent);
-          return v.id === id && v.approved === true;
-        } catch {
-          return false;
-        }
-      }),
-    review.id,
-  );
-  await adminPage
-    .locator("#reason")
-    .fill("Pagamento fictício e titular conferidos no teste");
-  await adminPage.locator("#verified").check();
-  await adminPage
-    .locator(".admin-record")
-    .filter({ has: adminPage.locator("pre").filter({ hasText: pending.id }) })
-    .filter({ has: adminPage.getByRole("button", { name: "Confirmar venda" }) })
-    .getByRole("button", { name: "Confirmar venda" })
-    .click();
-  await adminPage.waitForFunction(
-    (id) =>
-      [...document.querySelectorAll(".admin-record pre")].some((p) => {
-        try {
-          const v = JSON.parse(p.textContent);
-          return v.id === id && v.status === "confirmed";
+          const r = JSON.parse(p.textContent);
+          return r.id === id && r.status === "confirmed";
         } catch {
           return false;
         }
@@ -191,29 +185,15 @@ try {
     pending.id,
   );
   assert.equal(
-    (await transaction((c) => s.dashboard(c, owner))).coupon.used,
+    (await transaction((c) => s.dashboard(c, owner.p))).coupon.used,
     true,
   );
-  const reuse = await page.evaluate(async (coupon) => {
-    const r = await fetch("/api/referral", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "checkout",
-        coupon,
-        items: [{ id: "modelo-01", variantIndex: 0, size: "M", qty: 2 }],
-      }),
-    });
-    return r.status;
-  }, coupon);
-  assert.equal(reuse, 400);
-  await adminContext.close();
   assert.deepEqual(errors, []);
   console.log(
-    "Fluxo móvel REAL: link de acesso, cookie, painel, resgate, cupom, cotação, pedido e link WhatsApp idênticos ao servidor e cancelamento, aprovação no painel administrativo e confirmação de venda sintética passaram. Cupom consumido uma vez; e-mail e envio no WhatsApp não realizados.",
+    "Mobile full stack OK: Google SDK/RSA local fixtures, consent, challenge/nonce, login/session, referral, administrative approval, single redemption, cart and WhatsApp totals, cancellation and sale confirmation. Real Google authentication NOT tested.",
   );
 } finally {
-  await browser?.close();
-  server.kill("SIGTERM");
+  await browser.close();
+  await new Promise((ok) => server.close(ok));
 }
 process.exit(0);

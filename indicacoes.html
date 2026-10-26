@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="referrer" content="no-referrer" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Indique & Ganhe — RFA.FIT</title>
     <link rel="stylesheet" href="/assets/referrals.css" />
   </head>
@@ -18,8 +18,8 @@
         <div>Indique 9 amigas e ganhe 30% OFF.</div>
       </div>
       <p>
-        Sem exigir compra das amigas. Cadastros distintos, com e-mail confirmado
-        e aprovação de legitimidade, contam para seu benefício.
+        Sem exigir compra das amigas. Cadastros distintos, com identidade Google
+        verificada e aprovação de legitimidade, contam para seu benefício.
       </p>
       <p id="status" role="status" aria-live="polite">
         Consultando disponibilidade…
@@ -27,18 +27,12 @@
       <section id="registration" class="campaign-card" hidden>
         <h2>Seu acesso seguro</h2>
         <p>
-          Cadastre-se ou entre pelo link de uso único enviado ao seu e-mail. Não
-          informe contatos de outras pessoas.
+          Entre com sua conta Google. Usamos apenas o identificador da conta e o
+          e-mail verificado. Não pedimos senha Google nem acesso aos seus
+          contatos.
         </p>
         <form id="join">
-          <label
-            >Seu e-mail<input
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-              maxlength="254" /></label
-          ><label class="honeypot" aria-hidden="true"
+          <label class="honeypot" aria-hidden="true"
             >Site<input
               name="website"
               tabindex="-1"
@@ -48,8 +42,13 @@
             <a href="/regulamento.html">regulamento</a> e a
             <a href="/privacidade.html">política de privacidade</a>. Não
             autorizo publicidade por este cadastro.</label
-          ><button>Enviar link de acesso</button>
+          ><button id="prepareGoogle">Continuar com Google</button>
         </form>
+        <div id="googleSignIn" aria-label="Entrar com Google"></div>
+        <p>
+          Login não conta como indicação aprovada: cada cadastro passa por
+          revisão de legitimidade.
+        </p>
       </section>
       <section id="dashboard" class="campaign-card" hidden>
         <h2>Seu painel</h2>

@@ -57,17 +57,81 @@ async function run(fn) {
     status(e.message);
   }
 }
+let googleClientId = "";
+let sdkPromise;
+let prepared = false;
+function loadGoogle() {
+  if (window.google?.accounts?.id) return Promise.resolve();
+  if (sdkPromise) return sdkPromise;
+  sdkPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = () => {
+      sdkPromise = null;
+      script.remove();
+      reject(Error("Não foi possível carregar o Google. Tente novamente."));
+    };
+    document.head.append(script);
+  });
+  return sdkPromise;
+}
 $("join").onsubmit = (e) => {
   e.preventDefault();
-  const f = new FormData(e.target);
   run(async () => {
-    const b = await api("register", {
-      email: f.get("email"),
-      website: f.get("website"),
-      consent: f.get("consent") === "on",
-      ref: new URLSearchParams(location.search).get("ref") || "",
-    });
-    status(b.message);
+    if (prepared) {
+      location.reload();
+      return;
+    }
+    const f = new FormData(e.target);
+    if (f.get("consent") !== "on")
+      throw Error("Aceite o regulamento e a política de privacidade.");
+    const button = $("prepareGoogle");
+    button.disabled = true;
+    try {
+      const ch = await api("googleChallenge", {
+        ref: new URLSearchParams(location.search).get("ref") || "",
+      });
+      await loadGoogle();
+      window.google.accounts.id.initialize({
+        client_id: googleClientId,
+        nonce: ch.nonce,
+        auto_select: false,
+        ux_mode: "popup",
+        callback: (response) =>
+          run(async () => {
+            try {
+              await api("googleLogin", {
+                credential: response.credential,
+                csrfToken: ch.csrfToken,
+                consent: new FormData($("join")).get("consent") === "on",
+                website: f.get("website"),
+              });
+              $("googleSignIn").replaceChildren();
+              await panel();
+            } finally {
+              button.disabled = false;
+            }
+          }),
+      });
+      prepared = true;
+      button.textContent = "Reiniciar acesso";
+      $("googleSignIn").replaceChildren();
+      window.google.accounts.id.renderButton($("googleSignIn"), {
+        type: "standard",
+        theme: "outline",
+        size: "large",
+        text: "signin_with",
+        width: Math.min(320, $("registration").clientWidth - 48),
+        locale: "pt-BR",
+      });
+      status(
+        "Selecione sua conta no botão do Google. O acesso expira em 5 minutos.",
+      );
+    } finally {
+      button.disabled = false;
+    }
   });
 };
 $("copy").onclick = () =>
@@ -91,6 +155,7 @@ $("deletion").onclick = () =>
 $("logout").onclick = () =>
   run(async () => {
     await api("logout");
+    window.google?.accounts?.id.disableAutoSelect();
     location.reload();
   });
 run(async () => {
@@ -103,12 +168,11 @@ run(async () => {
     return;
   }
   $("registration").hidden = false;
-  const token = new URLSearchParams(location.hash.slice(1)).get("token");
+  googleClientId = config.googleClientId;
   history.replaceState(null, "", location.pathname + location.search);
-  if (token) await api("verify", { token });
   try {
     await panel();
   } catch {
-    status("Informe seu e-mail para receber um link de acesso.");
+    status("Entre com Google para acessar seu painel.");
   }
 });

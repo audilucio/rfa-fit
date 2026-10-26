@@ -1,28 +1,18 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { PGlite } from "@electric-sql/pglite";
-import { readFileSync } from "node:fs";
 import { tier, quote, message, emailIdentity, hash } from "../lib/domain.js";
 import * as s from "../lib/service.js";
+import { migrate, login, person as makePerson, claims } from "./helpers.js";
 process.env.IDENTITY_SECRET = "synthetic-test-only-secret-32-characters";
 let db;
 const item = { id: "modelo-01", variantIndex: 0, size: "M", qty: 1 };
 before(async () => {
   db = new PGlite();
-  await db.exec(readFileSync("migrations/001_referrals.sql", "utf8"));
+  await migrate(db);
 });
 after(async () => db.close());
-async function person(email, ref) {
-  const r = await s.register(db, { email, ref, consent: true });
-  const token = await s.verify(db, r.token);
-  const p = await s.participant(db, token);
-  await s.admin(
-    db,
-    { action: "approve", id: p.id, reason: "Cadastro sintético legítimo" },
-    "test-admin",
-  );
-  return { ...p, approved: true };
-}
+const person = (email, ref, extra) => makePerson(db, email, ref, extra);
 test("níveis 0,1,2,3,6,9,10 e limite", () => {
   for (const [n, v] of [
     [0, 0],
@@ -60,27 +50,33 @@ test("identidade normalizada, aliases e endereços inválidos", () => {
   );
   assert.throws(() => emailIdentity("no"));
 });
-test("confirmação de uso único, expiração, deduplicação, autoconvite e atribuição imutável", async () => {
+test("Google challenge single use, expiry, contact deduplication and self referral", async () => {
   const owner = await person("owner@example.com");
+  await assert.rejects(() => login(db, owner.email, owner.code), /Autoconvite/);
   await assert.rejects(
-    () =>
-      s.register(db, { email: owner.email, ref: owner.code, consent: true }),
-    /Autoconvite/,
-  );
-  await assert.rejects(
-    () =>
-      s.register(db, { email: "new@example.com", ref: "fake", consent: true }),
+    () => login(db, "new@example.com", "f".repeat(20)),
     /inválido/,
   );
-  const a = await s.register(db, {
-    email: "friend@example.com",
-    ref: owner.code,
-    consent: true,
-  });
+  const ch = await s.googleChallenge(db, owner.code);
   assert.equal((await s.dashboard(db, owner)).confirmed, 0);
-  const sess = await s.verify(db, a.token);
-  await assert.rejects(() => s.verify(db, a.token), /inválido/);
-  const friend = await s.participant(db, sess);
+  const payload = claims("friend@example.com", ch.nonce);
+  const session = await s.googleLogin(
+    db,
+    payload,
+    { csrfToken: ch.csrfToken, consent: true },
+    ch.csrfToken,
+  );
+  await assert.rejects(
+    () =>
+      s.googleLogin(
+        db,
+        payload,
+        { csrfToken: ch.csrfToken, consent: true },
+        ch.csrfToken,
+      ),
+    /utilizado/,
+  );
+  const friend = await s.participant(db, session);
   assert.equal((await s.dashboard(db, owner)).confirmed, 0);
   await s.admin(
     db,
@@ -88,17 +84,28 @@ test("confirmação de uso único, expiração, deduplicação, autoconvite e at
     "admin",
   );
   assert.equal((await s.dashboard(db, owner)).confirmed, 1);
-  await s.register(db, { email: "friend+alias@example.com", consent: true });
+  await login(db, "friend+alias@example.com");
   assert.equal((await s.dashboard(db, owner)).confirmed, 1);
-  const old = await s.register(db, {
-    email: "expires@example.com",
-    consent: true,
-  });
-  await db.query(
-    "UPDATE tokens SET expires_at=now()-interval '1 minute' WHERE hash=$1",
-    [hash(old.token)],
+  await assert.rejects(
+    () =>
+      login(db, "friend@example.com", undefined, {
+        sub: "another-google-account",
+      }),
+    /vinculado/,
   );
-  await assert.rejects(() => s.verify(db, old.token));
+  const expired = await s.googleChallenge(db);
+  await db.query(
+    "UPDATE google_auth_challenges SET expires_at=now()-interval '1 second' WHERE hash=$1",
+    [hash(expired.csrfToken)],
+  );
+  await assert.rejects(() =>
+    s.googleLogin(
+      db,
+      claims("expired@example.com", expired.nonce),
+      { csrfToken: expired.csrfToken, consent: true },
+      expired.csrfToken,
+    ),
+  );
 });
 test("progressão persistente, resgate único concorrente, reserva, expiração, fraude e confirmação", async () => {
   const p = await person("levels@example.com");
@@ -185,9 +192,7 @@ test("resgate em 3 e 6 encerra progressão e cupom expira em 30 dias", async () 
     const d = await s.dashboard(db, p);
     assert.equal(d.coupon.percent, (n / 3) * 10);
     assert.ok(new Date(d.coupon.expires_at) - Date.now() > 29 * 86400000);
-    await assert.rejects(() =>
-      s.register(db, { email: "late@example.com", ref: p.code, consent: true }),
-    );
+    await assert.rejects(() => login(db, "late@example.com", p.code));
     await db.query(
       "UPDATE coupons SET expires_at=now()-interval '1 second' WHERE participant=$1",
       [p.id],
@@ -231,4 +236,80 @@ test("rate limiting persiste e limita", async () => {
   assert.equal(await s.rate(db, "test-rate", 2), true);
   assert.equal(await s.rate(db, "test-rate", 2), true);
   assert.equal(await s.rate(db, "test-rate", 2), false);
+});
+test("stable Google sub survives email changes; historical contacts cannot be reused or auto linked", async () => {
+  const first = await login(db, "stable@example.com", undefined, {
+    sub: "stable-sub",
+  });
+  const p = await s.participant(db, first);
+  const second = await login(db, "renamed@example.com", undefined, {
+    sub: "stable-sub",
+  });
+  assert.equal((await s.participant(db, second)).id, p.id);
+  await assert.rejects(
+    () => login(db, "stable@example.com", undefined, { sub: "different-sub" }),
+    /vinculado/,
+  );
+  const legacyEmail = emailIdentity("legacy@example.com");
+  const id = "11111111-1111-4111-8111-111111111111";
+  await db.query(
+    "INSERT INTO participants(id,email,identity_hash,code,confirmed) VALUES($1,$2,$3,$4,true)",
+    [id, legacyEmail.email, legacyEmail.identity_hash, "legacy-code"],
+  );
+  await db.query("INSERT INTO participant_contacts VALUES($1,$2)", [
+    legacyEmail.identity_hash,
+    id,
+  ]);
+  await assert.rejects(() => login(db, "legacy@example.com"), /vinculado/);
+});
+test("CSRF and nonce required, no consent means no registration", async () => {
+  const ch = await s.googleChallenge(db);
+  const p = claims("csrf@example.com", ch.nonce);
+  await assert.rejects(
+    () =>
+      s.googleLogin(db, p, { csrfToken: "bad", consent: true }, ch.csrfToken),
+    /CSRF/,
+  );
+  await assert.rejects(
+    () =>
+      s.googleLogin(
+        db,
+        p,
+        { csrfToken: ch.csrfToken, consent: false },
+        ch.csrfToken,
+      ),
+    /Aceite/,
+  );
+  await assert.rejects(
+    () =>
+      s.googleLogin(
+        db,
+        { ...p, nonce: "bad" },
+        { csrfToken: ch.csrfToken, consent: true },
+        ch.csrfToken,
+      ),
+    /nonce/,
+  );
+});
+test("admin is pinned to Google subject and cannot transfer with changed email", async () => {
+  process.env.ADMIN_EMAILS = "admin@gmail.com";
+  const sess = await login(db, "admin@gmail.com", undefined, {
+    sub: "admin-stable",
+  });
+  const admin = await s.participant(db, sess);
+  assert.equal(await s.isAdmin(db, admin), true);
+  const changed = await login(db, "admin-renamed@gmail.com", undefined, {
+    sub: "admin-stable",
+  });
+  assert.equal(await s.isAdmin(db, await s.participant(db, changed)), true);
+  await assert.rejects(
+    () => login(db, "admin@gmail.com", undefined, { sub: "different-admin" }),
+    /vinculado/,
+  );
+  process.env.ADMIN_EMAILS = "custom@example.com";
+  const nonAuthority = await login(db, "custom@example.com");
+  assert.equal(
+    await s.isAdmin(db, await s.participant(db, nonAuthority)),
+    false,
+  );
 });

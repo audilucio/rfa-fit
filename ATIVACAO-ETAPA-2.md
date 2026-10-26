@@ -1,5 +1,7 @@
 # Etapa 2 — RFA.FIT Indique & Ganhe
 
+> Histórico: o login por e-mail desta etapa foi substituído por Google Identity Services. A dependência Resend foi eliminada; ver [estado atual](ATIVACAO-GOOGLE.md). Os itens abaixo registram a situação anterior.
+
 Verificação em 23/10/2026. Campanha permanece desativada; nenhuma compra real, mensagem de WhatsApp ou entrega de e-mail foi simulada como resultado de produção.
 
 ## Infraestrutura concluída
