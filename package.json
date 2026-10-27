@@ -13,7 +13,8 @@
     "test:browser:real": "node scripts/browser-real-test.js",
     "build": "node scripts/build.js",
     "test:staging": "node scripts/staging-smoke.js",
-    "test:public": "node scripts/public-smoke.js"
+    "test:public": "node scripts/public-smoke.js",
+    "test:banner": "node scripts/banner-test.js"
   },
   "dependencies": {
     "jose": "^6.2.13",

@@ -206,21 +206,33 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
 <header>
   <div class="container nav">
     <a href="#" class="logo">RFA.FIT<small>MODA PRAIA</small></a>
-    <nav>
+    <nav id="siteNav" aria-label="Navegação principal">
       <a href="#colecao">COLEÇÃO</a>
       <a href="#exclusivos">EXCLUSIVOS</a>
       <a href="#beneficios">DETALHES</a>
       <a href="#marca">A MARCA</a>
       <a href="#contato">CONTATO</a>
+      <a id="referralNavLink" class="referral-nav-link" href="https://rfa-fit-loja.vercel.app/indicacoes.html" hidden>INDIQUE &amp; GANHE</a>
     </nav>
     <div class="nav-actions">
-      <button class="icon-btn mobile-menu" aria-label="Menu" onclick="document.querySelector('nav').classList.toggle('mobile-open')">☰</button>
+      <button class="icon-btn mobile-menu" aria-label="Menu" aria-controls="siteNav" aria-expanded="false" onclick="this.setAttribute('aria-expanded', document.getElementById('siteNav').classList.toggle('mobile-open'))">☰</button>
       <button class="icon-btn" aria-label="Sacola" onclick="openCart()">🛍<span class="badge" id="cartCount">0</span></button>
     </div>
   </div>
 </header>
 
 <main>
+<section id="referralPromo" class="referral-promo" aria-labelledby="referralPromoTitle" hidden>
+  <div class="container referral-promo-inner">
+    <div class="referral-promo-copy">
+      <span class="referral-promo-eyebrow">RFA.FIT · COMPARTILHE SEU ESTILO</span>
+      <h2 id="referralPromoTitle">INDIQUE &amp; GANHE <span>— ATÉ 30% OFF!</span></h2>
+      <p class="referral-promo-levels"><span>3 amigas = 10% OFF</span> · <span>6 amigas = 20% OFF</span> · <span>9 amigas = 30% OFF</span></p>
+      <p id="referralPromoValidation" class="referral-promo-validation">As indicações passam por validação cadastral e aprovação administrativa. <a href="/regulamento.html">Veja o regulamento.</a></p>
+    </div>
+    <a id="referralPromoButton" class="referral-promo-cta" href="https://rfa-fit-loja.vercel.app/indicacoes.html" aria-describedby="referralPromoValidation">QUERO PARTICIPAR 🎁</a>
+  </div>
+</section>
 <section class="hero">
   <div class="hero-media"><img id="heroImage" src="" alt="RFA.FIT Moda Praia"></div>
   <div class="hero-dots" id="heroDots"></div>
@@ -287,7 +299,7 @@ footer{padding:28px 0;border-top:1px solid var(--line);font-size:12px;color:var(
 </section>
 </main>
 
-<section id="referralPromo" class="referral-section" hidden><span>RFA.FIT — INDIQUE &amp; GANHE</span><h2>Estilo que se compartilha.</h2><p>Compartilhe seu link e acompanhe suas indicações.</p><div class="referral-levels"><div>Indique 3 amigas e ganhe 10% OFF.</div><div>Indique 6 amigas e ganhe 20% OFF.</div><div>Indique 9 amigas e ganhe 30% OFF.</div></div><p>Um benefício individual, válido por 30 dias. Resgatar encerra sua progressão.</p><a class="btn" href="/indicacoes.html">CONHEÇA O PROGRAMA →</a></section>
+
 <footer><div class="container">© <span id="year"></span> RFA.FIT · MODA PRAIA</div></footer>
 
 

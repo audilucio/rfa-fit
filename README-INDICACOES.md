@@ -93,3 +93,9 @@ Testes de assinatura usam chaves RSA e tokens **locais de teste**. API/default d
 `public/` contém apenas a lista explícita de arquivos estáticos: backend, testes, documentação operacional, credenciais e backups ficam de fora. Backups desta alteração estão em `.vercel/backup-google/`, ignorados no Git e na publicação.
 
 Referências oficiais: [configuração GIS](https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid), [verificação de ID token](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token), [API JavaScript e nonce](https://developers.google.com/identity/gsi/web/reference/js-reference), [jose](https://github.com/panva/jose), [TLS PostgreSQL](https://node-postgres.com/features/ssl).
+
+## Banner e navegação da loja
+
+A divulgação fica logo abaixo do cabeçalho, antes da imagem principal, com botão nativo para `https://rfa-fit-loja.vercel.app/indicacoes.html` e aviso de validação cadastral/administrativa. Banner e link do menu começam ocultos e só aparecem quando uma resposta HTTP bem-sucedida de `/api/referral` contém `enabled: true`. Falha de rede, API desativada ou resposta inválida mantém a divulgação oculta. O botão de participação não depende da cotação do carrinho.
+
+`npm run test:banner` testa 360/390/768/1024/1440 px, posição e visibilidade do botão, navegação real do link com destino interceptado, menu móvel, estados desativados/falhas e independência de erros de cotação. As capturas e backups ficam em `.vercel/`, fora do Git e da publicação.

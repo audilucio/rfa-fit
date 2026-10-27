@@ -97,13 +97,29 @@
           },
         ])
       : originalBuy();
-  fetch("/api/referral")
-    .then((r) => r.json())
+  const menu = document.getElementById("siteNav");
+  const menuButton = document.querySelector(".mobile-menu");
+  const closeMenu = () => {
+    menu.classList.remove("mobile-open");
+    menuButton.setAttribute("aria-expanded", "false");
+  };
+  menu.addEventListener("click", (e) => {
+    if (e.target.closest("a")) closeMenu();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+  fetch("/api/referral", { cache: "no-store" })
+    .then((r) => {
+      if (!r.ok) throw Error("Campanha indisponível");
+      return r.json();
+    })
     .then((c) => {
       enabled = c.enabled === true;
       box.hidden = !enabled;
       document.getElementById("validatedTotals").hidden = !enabled;
       document.getElementById("referralPromo").hidden = !enabled;
+      document.getElementById("referralNavLink").hidden = !enabled;
       if (enabled) void refresh();
     })
     .catch(() => {});

@@ -117,3 +117,128 @@
   position: absolute;
   left: -10000px;
 }
+
+/* Homepage promotion: visible only after a successful, enabled API response. */
+.referral-promo[hidden],
+.referral-nav-link[hidden] {
+  display: none !important;
+}
+.referral-promo {
+  padding: 28px 0;
+  color: #fff7ed;
+  background:
+    radial-gradient(ellipse at 100% 0%, #956d4650, transparent 65%),
+    linear-gradient(110deg, #30221b, #513925);
+  border-bottom: 1px solid #c79c6150;
+}
+.referral-promo-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 26px;
+  align-items: center;
+}
+.referral-promo-eyebrow {
+  display: block;
+  color: #ddbc8b;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+}
+.referral-promo h2 {
+  margin: 10px 0;
+  font-size: clamp(24px, 2.6vw, 36px);
+  line-height: 1.18;
+}
+.referral-promo h2 span {
+  color: #efcf9b;
+  white-space: nowrap;
+}
+.referral-promo-levels {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.referral-promo-levels span {
+  display: inline-block;
+  white-space: nowrap;
+}
+.referral-promo-validation {
+  margin: 9px 0 0;
+  color: #e0d1c1;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.referral-promo-validation a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.referral-promo-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 16px 24px;
+  border: 1px solid #e5c38f;
+  border-radius: 999px;
+  background: #efd5ab;
+  color: #30221b;
+  box-shadow: 0 6px 24px #130b0633;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+.referral-promo-cta:hover {
+  background: #ffebc9;
+}
+.referral-promo a:focus-visible,
+.referral-nav-link:focus-visible {
+  outline: 2px solid #ddb67b;
+  outline-offset: 4px;
+}
+.referral-nav-link {
+  color: #835a30;
+  opacity: 1;
+}
+@media (max-width: 1100px) and (min-width: 901px) {
+  #siteNav {
+    gap: 12px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 900px) {
+  header #siteNav.mobile-open {
+    display: flex;
+    position: absolute;
+    inset: 100% 0 auto;
+    flex-direction: column;
+    gap: 0;
+    padding: 10px 20px 18px;
+    background: #f8f5ef;
+    border-bottom: 1px solid #d6c4a3;
+    box-shadow: 0 16px 24px #211a1614;
+  }
+  #siteNav.mobile-open a:not([hidden]) {
+    padding: 13px 0;
+    min-height: 44px;
+  }
+}
+@media (max-width: 640px) {
+  .referral-promo {
+    padding: 22px 0;
+  }
+  .referral-promo-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .referral-promo h2 {
+    font-size: clamp(23px, 6.4vw, 31px);
+  }
+  .referral-promo-levels {
+    font-size: 12px;
+  }
+  .referral-promo-cta {
+    width: 100%;
+    min-height: 50px;
+  }
+}
